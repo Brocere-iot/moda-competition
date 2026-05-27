@@ -9,9 +9,7 @@ A lightweight FastAPI application featuring Swagger UI documentation, environmen
 Before starting, make sure you have a `.env` file created in the root directory:
 
 ```env
-APP_ENV=development
 PORT=8000
-HOST=0.0.0.0
 ```
 
 # Option 1: Local Development (Without Container)
@@ -78,6 +76,7 @@ docker build -t fastapi-app .
 ## 2. Run the Docker Container
 Launch the container in detached mode (-d), exposing port 8000 and injecting your local .env configuration file:
 
+NOTE: port can be changed inside the 'run' command. E.g. 3000:3000
 ```bash
 docker run -d --name fastapi_container -p 8000:8000 --env-file .env fastapi-app
 ```
