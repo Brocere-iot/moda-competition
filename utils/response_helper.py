@@ -1,6 +1,7 @@
 import time
 import random
 from datetime import datetime
+from typing import Any
 import pytz
 
 TAIWAN_TZ = pytz.timezone("Asia/Taipei")
@@ -20,3 +21,20 @@ def populate_meta_data(incline_data_dict):
         "sensor_data": incline_data_dict
         }
     return updated_incline_data_dict
+
+def success_response(data: Any = None, message: str = "Success") -> dict:
+    return {
+        "success": True,
+        "message": message,
+        "data": data,
+        "timestamp": int(time.time()),
+    }
+
+
+def error_response(message: str, code: int = None) -> dict:
+    return {
+        "success": False,
+        "message": message,
+        "code": code,
+        "timestamp": int(time.time()),
+    }
