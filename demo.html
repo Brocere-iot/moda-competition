@@ -136,9 +136,9 @@
                     </div>
                 </div>
 
-                <div id="mod4BtnContainer" class="mt-4 z-10 hidden">
-                    <button onclick="executeMod4Query()" class="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold py-2 px-4 rounded-xl shadow-lg transition duration-200 animate-bounce">
-                        ⚡ 點擊調用第四模組網關
+                <div class="mt-4 z-10">
+                    <button id="executeBtn" onclick="executeQuery()" class="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold py-2 px-4 rounded-xl shadow-lg transition duration-200 animate-bounce">
+                        ⚡ 點擊調用模組一網關
                     </button>
                 </div>
             </div>
@@ -146,10 +146,10 @@
 
         <section class="xl:col-span-5 flex flex-col space-y-4">
             <div class="grid grid-cols-2 gap-2">
-                <div id="tabInput" class="bg-gray-900 border-b-2 border-blue-500 py-2 text-center text-xs font-bold text-blue-400 cursor-pointer">
+                <div id="tabInput" onclick="toggleTab('input')" class="bg-gray-900 border-b-2 border-blue-500 py-2 text-center text-xs font-bold text-blue-400 cursor-pointer">
                     1. 請求內容 (Input)
                 </div>
-                <div id="tabOutput" class="bg-gray-950 py-2 text-center text-xs font-bold text-gray-500 cursor-pointer">
+                <div id="tabOutput" onclick="toggleTab('output')" class="bg-gray-950 py-2 text-center text-xs font-bold text-gray-500 cursor-pointer">
                     2. 交換規格 (Output JSON)
                 </div>
             </div>
@@ -198,123 +198,93 @@
         const mockData = {
             1: {
                 method: "GET",
-                input: "https://5urqyc2ccc.execute-api.ap-northeast-1.amazonaws.com/api/fire-data?iot-name=04702154615&end-date=1759827597&start-date=1759826397",
+                input: "http://localhost:8000/data/fire/1",
                 desc: "當博誠邊緣端火災監測魔塊 (IOT5_Fire.png) 聯網時，系統主動採集包含紅外熱顯像、二氧化碳、周圍溫度等微觀真值指標，並透過此結構化 API 向中央網關回傳數據。",
                 status: "✓ 解析火災感測器數據...\n✓ 壓縮傳輸特徵碼...",
                 json: {
                     "statusCode": 200,
-                    "message": "Fetched data for 04702154615",
-                    "iot-name": "04702154615",
-                    "start-date": 1759818933,
-                    "end-date": 1759905333,
-                    "max-len": 1,
-                    "data": [
-                        {
-                            "temp": "31.7",
-                            "humi": "62.2",
-                            "rsrq_index": "17",
-                            "url": "https://d65hb6cahdqvu.cloudfront.net/04702154615/1759905263.png",
-                            "vbat": "3637",
-                            "co2": "-3108",
-                            "timestamp": 1759905263,
-                            "tw_time": "2025-10-08 14:34:23"
-                        }
-                    ]
+                    "message": "Fire data for station 1 retrieved successfully.",
+                    "station_id": 1,
+                    "data": {
+                        "timestamp": 1748390400,
+                        "tw_time": "2026-05-28 14:00:00",
+                        "rsrq_index": -82,
+                        "vbat": 3750,
+                        "temp": 87.3,
+                        "humi": 38.1,
+                        "co2": -3108,
+                        "url": "https://d65hb6cahdqvu.cloudfront.net/04702154615/1779353739.png"
+                    }
                 }
             },
             2: {
                 method: "GET",
-                input: "https://5urqyc2ccc.execute-api.ap-northeast-1.amazonaws.com/api/fft-data?iot-name=04702154614&end-date=1760604221&start-date=1760603981",
+                input: "http://localhost:8000/data/earthquake/1",
                 desc: "部署在偏遠邊坡土石流高風險區的魔塊 (blockcraft+logo.png)，偵測到結構體或坡地異常傾斜移位與高頻振動。API 將回傳經邊緣端快速傅立葉轉換 (FFT) 後的三軸圖資與 P/S 波能量指標。",
                 status: "✓ 地震/傾斜閥值判定成功\n✓ 執行高頻 FFT 圖資轉換...",
                 json: {
                     "statusCode": 200,
-                    "message": "Fetched FFT data for device 04702154614",
-                    "iot-name": "04702154614",
-                    "start-date": 1760603981,
-                    "end-date": 1760604221,
-                    "max-len": 1,
-                    "data": [
-                        {
-                            "x_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1760604191_X_freq.png",
-                            "y_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1760604191_Y_freq.png",
-                            "z_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1760604191_Z_freq.png",
-                            "x_rms": "7",
-                            "y_rms": "276",
-                            "z_rms": "5",
-                            "P_wave": "0",
-                            "S_wave": "1"
-                        }
-                    ]
-                }
-            },
-            3: {
-                method: "POST_TEXT",
-                input: "「我是馬太鞍溪上游巡檢員，剛剛大雨不停，發現堰塞湖水位暴漲已經開始溢流了！而且旁邊山壁發生土石流導致道路坍方，目前手機完全沒有行动通訊訊號，我是透過魔塊衛星發出這條 SOS 求救，請指揮中心立刻派人撤離下游居民！」",
-                desc: "極端災變導致馬太鞍溪現地地面行動基地台癱瘓時，第一線人員發送白話文字通報。博誠 API 元件內嵌 AI NLP 自然語言處理解譯大腦，能在 0.5 秒內咬住防汛、土石流等公共安全關鍵字，轉譯為結構化標準 JSON 格式以利系統整合。",
-                status: "✓ 開啟 AI 語意智能中樞\n✓ 自主分析多步驟決策中...",
-                json: {
-                    "report_id": "MATAIA_20260527_0012",
-                    "timestamp": "2026-05-27T19:15:30Z",
-                    "source_channel": "Satellite_SMS_Bridge",
-                    "network_telemetry": {
-                        "carrier": "Brocere_NTN_Network",
-                        "mode": "NTN_GEO_SATELLITE",
-                        "rssi": -118,
-                        "latency_ms": 650
-                    },
-                    "raw_input_text": "我是馬太鞍溪上游巡檢員，剛剛大雨不停，發現堰塞湖水位暴漲已經開始溢流了！而且旁邊山壁發生土石流導致道路坍方，目前手機完全沒有行动通訊訊號，我是透過魔塊衛星發出這條 SOS 求救，請指揮中心立刻派人撤離下游居民！",
-                    "ai_nlp_analysis": {
-                        "primary_disaster_type": "Barrier_Lake_Overflow",
-                        "secondary_disaster_type": "Debris_Flow",
-                        "threat_level": "CRITICAL",
-                        "confidence_score": 0.96,
-                        "extracted_keywords": ["水位暴漲", "堰塞湖溢流", "發生土石流", "道路坍方", "沒有行動通訊訊號", "SOS", "立刻派人"]
-                    },
-                    "extracted_entities": {
-                        "location": {
-                            "reported_place": "花蓮縣馬太鞍溪上游堰塞湖",
-                            "latitude": 23.6342,
-                            "longitude": 121.3856,
-                            "coordinate_accuracy": "GPS_High_Precision"
-                        },
-                        "impact_objects": ["下游居民", "聯外道路"],
-                        "urgent_requests": ["人員撤離", "搜救派遣"]
-                    },
-                    "blockcraft_iot_fusion": {
-                        "trigger_hardware_cross_check": true,
-                        "target_sensor_modules": [
-                            { "sensor_type": "Radar_Water_Level_Gauge", "action": "QUERY_GROUND_TRUTH", "expected_field": "water_level_meter" },
-                            { "sensor_type": "3D_Inclinometer_Vibration", "action": "QUERY_GROUND_TRUTH", "expected_field": "slope_displacement_deg" }
-                        ],
-                        "edge_ai_camera_trigger": "CAPTURE_COMPRESSED_FEATURE_CODE"
-                    },
-                    "system_routing_action": {
-                        "next_component_api": "https://api.civictech.moda.gov.tw/v1/disaster/management/dispatch",
-                        "data_format_version": "v1.2.0-JSON-Schema",
-                        "broadcast_to_ncdr_cap": true
+                    "message": "Earthquake data for station 23 retrieved successfully.",
+                    "station_id": 23,
+                    "data": {
+                        "timestamp": 1779951869,
+                        "tw_time": "2026-05-28 15:04:29",
+                        "rsrq_index": -70,
+                        "vbat": 4141,
+                        "x_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1779849793_X_freq.png",
+                        "y_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1779849793_Y_freq.png",
+                        "z_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1779849793_Z_freq.png",
+                        "x_rms": 6,
+                        "y_rms": 197,
+                        "z_rms": 5,
+                        "P_wave": 0,
+                        "S_wave": 0
                     }
                 }
             },
+            3: {
+                method: "POST",
+                input: "http://localhost:8000/notify\n\nRequest Body:\n{\n    \"text\": \"馬太鞍溪上游發生土石崩塌，旁邊有人受困！\"\n}",
+                desc: "極端災變導致馬太鞍溪現地地面行動基地台癱瘓時，第一線人員發送白話文字通報。博誠 API 元件內嵌關鍵字語意解析，能快速識別防汛、土石流等公共安全關鍵字，轉譯為結構化標準 JSON 格式以利系統整合。",
+                status: "✓ 開啟語意分析中樞\n✓ 自主分析多步驟決策中...",
+                json: {
+                    "success": true,
+                    "message": "已收到您的回報！\n通報時間：2026-05-28 14:00\n案件類型：土石流/崩塌\n地點：馬太鞍溪地區\n警急性：緊急",
+                    "data": {
+                        "station_id": "LINE_CITIZEN_REPORT_01",
+                        "timestamp": "2026-05-28T06:00:00Z",
+                        "raw_content": "馬太鞍溪上游發生土石崩塌，旁邊有人受困！",
+                        "structured_data": {
+                            "location": "花蓮縣馬太鞍溪地區 (經確認)",
+                            "hazard_type": "LANDSLIDE",
+                            "danger_level": "CRITICAL"
+                        },
+                        "human_readable_reply": "已收到您的回報！\n通報時間：2026-05-28 14:00\n案件類型：土石流/崩塌\n地點：馬太鞍溪地區\n警急性：緊急"
+                    },
+                    "timestamp": 1748390400
+                }
+            },
             4: {
-                method: "QUERY_OPEN_DATA",
-                input: "正在對接民生公共物聯網平台開放數據規格檔...\n網址來源：https://portal2.emic.gov.tw/Pub/ERA2/OpenData/ERA2_C4.json",
-                desc: "按下方『點擊調用第四模組網關』按鈕，API 服務元件將模擬實時串接內政部消防署中央災害應變中心 (EMIC) 體系資料，輸出符合政府開放資料標準與 CAP 防災協議的民生公共物聯網大數據交換包。",
+                method: "GET",
+                input: "http://localhost:8000/data/report?city_name=花蓮縣",
+                desc: "按下方『點擊調用第四模組網關』按鈕，API 服務元件將實時串接內政部消防署中央災害應變中心 (EMIC) 開放資料，輸出符合政府開放資料標準的民生公共物聯網大數據交換包。",
                 status: "✓ 等待外部中繼觸發命令...",
                 json: {
                     "success": true,
-                    "dataset_name": "ERA2_C4_EMIC_Central_Alerts",
-                    "updated_time": "2026-05-27T21:30:00+08:00",
-                    "records": [
-                        {
-                            "alert_id": "EMIC-2026-00981",
-                            "event_type": "堰塞湖水位警戒及邊坡防汛",
-                            "severity": "應變一級警戒",
-                            "location": "花蓮縣萬榮鄉馬太鞍溪上游流域",
-                            "description": "歷史花蓮馬太鞍溪堰塞湖情境追蹤演練：現地站點監測到集水區累積降雨異常，河道流量及堰塞湖蓄水位達一級預警閥值，請下游相關防災單位注意疏散準備與水情通報。",
-                            "source_agency": "消防署中央災害應變中心(EMIC)"
-                        }
-                    ]
+                    "message": "Success",
+                    "data": [{
+                        "city_name": "花蓮縣",
+                        "amber_rivers": "3", "amber_rivers_twp": "2", "amber_rivers_vil": "4",
+                        "red_rivers": "1", "red_rivers_twp": "1", "red_rivers_vil": "2",
+                        "amber_collapse": "2", "amber_collapse_twp": "1", "amber_collapse_vil": "2",
+                        "red_collapse": "1", "red_collapse_twp": "1", "red_collapse_vil": "1",
+                        "total_amber_twp": "3", "total_amber_vil": "6",
+                        "total_red_twp": "2", "total_red_vil": "3",
+                        "total_rivers": "4", "total_collapse": "3",
+                        "status": "應變一級警戒", "no_data_mark": null,
+                        "rpt_time": "2026-05-28T06:31:04.0000000+08:00"
+                    }],
+                    "timestamp": 1748390400
                 }
             }
         };
@@ -337,12 +307,8 @@
                 }
             }
 
-            // 特殊處理模組四按鈕顯示
-            if (modId === 4) {
-                document.getElementById("mod4BtnContainer").classList.remove("hidden");
-            } else {
-                document.getElementById("mod4BtnContainer").classList.add("hidden");
-            }
+            // 更新執行按鈕文字
+            document.getElementById("executeBtn").innerText = `⚡ 點擊調用第${["一","二","三","四"][modId-1]}模組網關`;
 
             // 更新中間網關的狀態文字
             document.getElementById("processStatus").innerText = mockData[modId].status;
@@ -359,9 +325,14 @@
             toggleTab('input');
         }
 
-        function executeMod4Query() {
-            // 模擬點擊 API 服務型元件觸發民生物聯網介接行為
-            document.getElementById("processStatus").innerText = "✓ 成功調用民生物聯網資料庫!\n✓ 數據同步封包封裝完畢.";
+        function executeQuery() {
+            const statusMessages = {
+                1: "✓ 成功調用火災監測資料庫!\n✓ 數據同步封包封裝完畢.",
+                2: "✓ 成功調用地震/傾斜資料庫!\n✓ FFT 圖資封包封裝完畢.",
+                3: "✓ 語意分析完成!\n✓ 結構化通報 JSON 輸出完畢.",
+                4: "✓ 成功調用民生物聯網資料庫!\n✓ 數據同步封包封裝完畢."
+            };
+            document.getElementById("processStatus").innerText = statusMessages[currentActiveModule];
             toggleTab('output');
         }
 
