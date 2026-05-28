@@ -10,6 +10,7 @@ Before starting, make sure you have a `.env` file created in the root directory:
 
 ```env
 PORT=8000
+LINE_CHANNEL_ACCESS_TOKEN=Your_LINE_Channel_Access_Token
 ```
 
 # Option 1: Local Development (Without Container)
@@ -94,3 +95,68 @@ Stop the container: docker stop fastapi_container
 Start the container again: docker start fastapi_container
 
 Remove the container: docker rm -f fastapi_container
+
+---
+
+# Option 3: LINE Webhook + ngrok Integration
+
+Expose your local FastAPI server to the internet so LINE can deliver webhook events to your `/notify` endpoint.
+
+<p align="center"><img src="output.gif" width="300" /></p>
+
+## Architecture
+
+```
+LINE User sends a message
+    ↓
+LINE Platform
+    ↓ webhook POST
+ngrok public URL (https://xxxx.ngrok-free.app/notify)
+    ↓ tunnels to
+Local FastAPI (localhost:8000/notify)
+    ↓ processes + replies
+LINE User receives the response
+```
+
+## 1. Install ngrok
+
+```bash
+brew install ngrok
+```
+
+Sign up at [https://ngrok.com](https://ngrok.com) to get your Auth Token, then:
+
+```bash
+ngrok config add-authtoken <YOUR_TOKEN>
+```
+
+## 2. Start Both Services
+
+Open two separate terminals:
+
+```bash
+# Terminal 1 - Start FastAPI
+python3 main.py
+```
+
+```bash
+# Terminal 2 - Start ngrok
+ngrok http 8000
+```
+
+ngrok will display a public URL, for example:
+
+```
+Forwarding  https://xxxx.ngrok-free.app -> localhost:8000
+```
+
+## 3. Configure LINE Webhook
+
+1. Go to [LINE Developers Console](https://developers.line.biz/)
+2. Select your Messaging API Channel
+3. Set the **Webhook URL** to:
+   ```
+   https://xxxx.ngrok-free.app/notify
+   ```
+4. Enable **Use webhook**
+5. Click **Verify** to confirm the connection
