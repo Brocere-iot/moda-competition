@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,18 +8,55 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #0b0f19; }
-        .code-font { font-family: 'JetBrains Mono', monospace; }
-        .glow-effect { transition: all 0.3s ease; }
-        .glow-effect:hover { box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
-        .active-card { border-color: #3b82f6; background-color: rgba(30, 41, 59, 0.8); box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
-        @keyframes pulse-line { 0%, 100% { opacity: 0.4; stroke-width: 2; } 50% { opacity: 1; stroke-width: 4; stroke: #3b82f6; } }
-        .pulsing-path { animation: pulse-line 2s infinite; }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #0b0f19;
+        }
+
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .glow-effect {
+            transition: all 0.3s ease;
+        }
+
+        .glow-effect:hover {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .active-card {
+            border-color: #3b82f6;
+            background-color: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        @keyframes pulse-line {
+
+            0%,
+            100% {
+                opacity: 0.4;
+                stroke-width: 2;
+            }
+
+            50% {
+                opacity: 1;
+                stroke-width: 4;
+                stroke: #3b82f6;
+            }
+        }
+
+        .pulsing-path {
+            animation: pulse-line 2s infinite;
+        }
     </style>
 </head>
+
 <body class="text-gray-100 min-h-screen flex flex-col">
 
-    <header class="border-b border-gray-800 bg-gray-900 bg-opacity-70 backdrop-blur px-6 py-4 flex justify-between items-center">
+    <header
+        class="border-b border-gray-800 bg-gray-900 bg-opacity-70 backdrop-blur px-6 py-4 flex justify-between items-center">
         <div class="flex items-center space-x-3">
             <div class="bg-blue-600 p-2 rounded-lg text-white font-bold tracking-wider text-sm">Blockcraft</div>
             <div>
@@ -27,87 +65,142 @@
             </div>
         </div>
         <div class="flex items-center space-x-4 text-xs text-gray-400">
-            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-ping"></span>網關核心：API 服務型元件已就緒</span>
+            <span class="flex items-center"><span
+                    class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-ping"></span>網關核心：API 服務型元件已就緒</span>
             <span class="border border-gray-700 px-2 py-1 rounded bg-gray-800">2026 競賽專用規格版本</span>
         </div>
     </header>
 
     <main class="flex-1 p-6 grid grid-cols-1 xl:grid-cols-12 gap-6 overflow-hidden">
-        
+
         <section class="xl:col-span-4 flex flex-col space-y-4">
             <div class="bg-gray-900 bg-opacity-50 border border-gray-800 rounded-xl p-4">
                 <h2 class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-3 flex items-center">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z">
+                        </path>
+                    </svg>
                     步驟 1：選擇多模態測站/通報源進行資料觸發
                 </h2>
                 <p class="text-xs text-gray-400 mb-4">點擊下方任一防災積木源，即可發起 API 請求封包，查看完整路由分析流向。</p>
-                
+
                 <div class="space-y-3">
-                    <div id="mod1" onclick="triggerModule(1)" class="glow-effect border border-gray-800 bg-gray-900 bg-opacity-80 rounded-xl p-4 flex items-center justify-between cursor-pointer active-card">
+                    <div id="mod1" onclick="triggerModule(1)"
+                        class="glow-effect border border-gray-800 bg-gray-900 bg-opacity-80 rounded-xl p-4 flex items-center justify-between cursor-pointer active-card">
                         <div class="flex items-center space-x-4">
-                            <div class="w-12 h-16 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700 relative overflow-hidden">
-                                <span class="absolute top-1 left-1 text-[8px] bg-red-900 text-red-300 px-1 rounded font-bold">FIRE</span>
-                                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A8 8 0 0117.657 18.657z"></path></svg>
+                            <div
+                                class="w-12 h-16 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700 relative overflow-hidden">
+                                <span
+                                    class="absolute top-1 left-1 text-[8px] bg-red-900 text-red-300 px-1 rounded font-bold">FIRE</span>
+                                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A8 8 0 0117.657 18.657z">
+                                    </path>
+                                </svg>
                             </div>
                             <div>
                                 <h3 class="text-sm font-bold text-white">模組一：魔塊火災監測 IoT</h3>
                                 <p class="text-xs text-gray-400">元件型態：IOT5_Fire.png</p>
-                                <span class="text-[10px] text-red-400 font-mono bg-red-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">測量指標：IR, CO2, TEMP</span>
+                                <span
+                                    class="text-[10px] text-red-400 font-mono bg-red-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">測量指標：IR,
+                                    CO2, TEMP</span>
                             </div>
                         </div>
                         <div class="text-blue-500" id="arrow1">
-                            <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
                         </div>
                     </div>
 
-                    <div id="mod2" onclick="triggerModule(2)" class="glow-effect border border-gray-800 bg-gray-900 bg-opacity-40 rounded-xl p-4 flex items-center justify-between cursor-pointer">
+                    <div id="mod2" onclick="triggerModule(2)"
+                        class="glow-effect border border-gray-800 bg-gray-900 bg-opacity-40 rounded-xl p-4 flex items-center justify-between cursor-pointer">
                         <div class="flex items-center space-x-4">
-                            <div class="w-12 h-16 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700 relative overflow-hidden">
-                                <span class="absolute top-1 left-1 text-[8px] bg-orange-900 text-orange-300 px-1 rounded font-bold">SLOPE</span>
-                                <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            <div
+                                class="w-12 h-16 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700 relative overflow-hidden">
+                                <span
+                                    class="absolute top-1 left-1 text-[8px] bg-orange-900 text-orange-300 px-1 rounded font-bold">SLOPE</span>
+                                <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
                             </div>
                             <div>
                                 <h3 class="text-sm font-bold text-white">模組二：地震/傾斜感測 IoT</h3>
                                 <p class="text-xs text-gray-400">元件型態：blockcraft+logo.png</p>
-                                <span class="text-[10px] text-orange-400 font-mono bg-orange-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">測量指標：傾斜, 高頻震動(FFT)</span>
+                                <span
+                                    class="text-[10px] text-orange-400 font-mono bg-orange-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">測量指標：傾斜,
+                                    高頻震動(FFT)</span>
                             </div>
                         </div>
                         <div class="text-gray-600" id="arrow2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
                         </div>
                     </div>
 
-                    <div id="mod3" onclick="triggerModule(3)" class="glow-effect border border-gray-800 bg-gray-900 bg-opacity-40 rounded-xl p-4 flex items-center justify-between cursor-pointer">
+                    <div id="mod3" onclick="triggerModule(3)"
+                        class="glow-effect border border-gray-800 bg-gray-900 bg-opacity-40 rounded-xl p-4 flex items-center justify-between cursor-pointer">
                         <div class="flex items-center space-x-4">
-                            <div class="w-12 h-16 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700 relative overflow-hidden">
-                                <span class="absolute top-1 left-1 text-[8px] bg-green-950 text-green-300 px-1 rounded font-bold">HUMAN</span>
-                                <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 002-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                            <div
+                                class="w-12 h-16 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700 relative overflow-hidden">
+                                <span
+                                    class="absolute top-1 left-1 text-[8px] bg-green-950 text-green-300 px-1 rounded font-bold">HUMAN</span>
+                                <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 002-2H8a2 2 0 00-2 2v14a2 2 0 002 2z">
+                                    </path>
+                                </svg>
                             </div>
                             <div>
                                 <h3 class="text-sm font-bold text-white">模組三：現場公民隨手通報</h3>
                                 <p class="text-xs text-gray-400">通訊載體：智慧手機 / LINE 介面</p>
-                                <span class="text-[10px] text-green-400 font-mono bg-green-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">通報機制：衛星鏈路 / 語意分析</span>
+                                <span
+                                    class="text-[10px] text-green-400 font-mono bg-green-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">通報機制：衛星鏈路
+                                    / 語意分析</span>
                             </div>
                         </div>
                         <div class="text-gray-600" id="arrow3">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
                         </div>
                     </div>
 
-                    <div id="mod4" onclick="triggerModule(4)" class="glow-effect border border-gray-800 bg-gray-900 bg-opacity-40 rounded-xl p-4 flex items-center justify-between cursor-pointer">
+                    <div id="mod4" onclick="triggerModule(4)"
+                        class="glow-effect border border-gray-800 bg-gray-900 bg-opacity-40 rounded-xl p-4 flex items-center justify-between cursor-pointer">
                         <div class="flex items-center space-x-4">
-                            <div class="w-12 h-16 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700 relative overflow-hidden">
-                                <span class="absolute top-1 left-1 text-[8px] bg-teal-900 text-teal-300 px-1 rounded font-bold">GOV</span>
-                                <svg class="w-8 h-8 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            <div
+                                class="w-12 h-16 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700 relative overflow-hidden">
+                                <span
+                                    class="absolute top-1 left-1 text-[8px] bg-teal-900 text-teal-300 px-1 rounded font-bold">GOV</span>
+                                <svg class="w-8 h-8 text-teal-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                    </path>
+                                </svg>
                             </div>
                             <div>
                                 <h3 class="text-sm font-bold text-white">模組四：民生物聯網官方介接</h3>
                                 <p class="text-xs text-gray-400">來源對象：NCDR / 國家應變中心庫</p>
-                                <span class="text-[10px] text-teal-400 font-mono bg-teal-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">鏈結機制：OpenData 整合交換</span>
+                                <span
+                                    class="text-[10px] text-teal-400 font-mono bg-teal-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">鏈結機制：OpenData
+                                    整合交換</span>
                             </div>
                         </div>
                         <div class="text-gray-600" id="arrow4">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
                         </div>
                     </div>
                 </div>
@@ -115,21 +208,30 @@
         </section>
 
         <section class="xl:col-span-3 flex flex-col justify-between space-y-4">
-            <div class="bg-gray-900 bg-opacity-50 border border-gray-800 rounded-xl p-4 flex-1 flex flex-col justify-center items-center relative">
+            <div
+                class="bg-gray-900 bg-opacity-50 border border-gray-800 rounded-xl p-4 flex-1 flex flex-col justify-center items-center relative">
                 <div class="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
                     <svg class="w-full h-64" viewBox="0 0 200 200" fill="none">
-                        <path class="pulsing-path" d="M 0,50 Q 100,100 200,50" stroke="#1e40af" stroke-width="2" fill="none" />
-                        <path class="pulsing-path" d="M 0,150 Q 100,100 200,150" stroke="#1e40af" stroke-width="2" fill="none" />
+                        <path class="pulsing-path" d="M 0,50 Q 100,100 200,50" stroke="#1e40af" stroke-width="2"
+                            fill="none" />
+                        <path class="pulsing-path" d="M 0,150 Q 100,100 200,150" stroke="#1e40af" stroke-width="2"
+                            fill="none" />
                     </svg>
                 </div>
 
-                <div class="z-10 text-center px-4 py-8 bg-gray-950 rounded-2xl border border-blue-900 border-opacity-50 max-w-xs shadow-2xl">
-                    <div class="w-16 h-16 bg-blue-600 bg-opacity-20 rounded-full border border-blue-500 flex items-center justify-center mx-auto mb-4 animate-pulse">
-                        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                <div
+                    class="z-10 text-center px-4 py-8 bg-gray-950 rounded-2xl border border-blue-900 border-opacity-50 max-w-xs shadow-2xl">
+                    <div
+                        class="w-16 h-16 bg-blue-600 bg-opacity-20 rounded-full border border-blue-500 flex items-center justify-center mx-auto mb-4 animate-pulse">
+                        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
+                            </path>
+                        </svg>
                     </div>
                     <h3 class="text-sm font-bold tracking-wider text-blue-400 uppercase mb-1">API 服務型處理元件</h3>
                     <p class="text-[11px] text-gray-400">Intelligent API Engine</p>
-                    
+
                     <div class="mt-6 p-2 bg-gray-900 rounded-lg border border-gray-800 text-left">
                         <div class="text-[10px] text-gray-500 uppercase tracking-tight font-bold">元件調用邏輯：</div>
                         <div id="processStatus" class="text-xs text-green-400 font-mono mt-1">✓ 監聽模組一通告請求...</div>
@@ -137,7 +239,8 @@
                 </div>
 
                 <div class="mt-4 z-10">
-                    <button id="executeBtn" onclick="executeQuery()" class="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold py-2 px-4 rounded-xl shadow-lg transition duration-200 animate-bounce">
+                    <button id="executeBtn" onclick="executeQuery()"
+                        class="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold py-2 px-4 rounded-xl shadow-lg transition duration-200 animate-bounce">
                         ⚡ 點擊調用模組一網關
                     </button>
                 </div>
@@ -146,22 +249,27 @@
 
         <section class="xl:col-span-5 flex flex-col space-y-4">
             <div class="grid grid-cols-2 gap-2">
-                <div id="tabInput" onclick="toggleTab('input')" class="bg-gray-900 border-b-2 border-blue-500 py-2 text-center text-xs font-bold text-blue-400 cursor-pointer">
+                <div id="tabInput" onclick="toggleTab('input')"
+                    class="bg-gray-900 border-b-2 border-blue-500 py-2 text-center text-xs font-bold text-blue-400 cursor-pointer">
                     1. 請求內容 (Input)
                 </div>
-                <div id="tabOutput" onclick="toggleTab('output')" class="bg-gray-950 py-2 text-center text-xs font-bold text-gray-500 cursor-pointer">
+                <div id="tabOutput" onclick="toggleTab('output')"
+                    class="bg-gray-950 py-2 text-center text-xs font-bold text-gray-500 cursor-pointer">
                     2. 交換規格 (Output JSON)
                 </div>
             </div>
 
-            <div class="bg-gray-900 bg-opacity-80 border border-gray-800 rounded-xl p-4 flex-1 flex flex-col justify-between overflow-hidden min-h-[450px]">
-                
+            <div
+                class="bg-gray-900 bg-opacity-80 border border-gray-800 rounded-xl p-4 flex-1 flex flex-col justify-between overflow-hidden min-h-[450px]">
+
                 <div id="inputView" class="flex-1 flex flex-col overflow-y-auto">
                     <div class="text-xs font-bold text-gray-400 mb-2 flex justify-between items-center">
                         <span>網址端點 / 文本格式 (Endpoint / Raw text)</span>
-                        <span class="text-[10px] bg-blue-900 bg-opacity-40 text-blue-300 px-2 py-0.5 rounded code-font" id="httpMethod">GET</span>
+                        <span class="text-[10px] bg-blue-900 bg-opacity-40 text-blue-300 px-2 py-0.5 rounded code-font"
+                            id="httpMethod">GET</span>
                     </div>
-                    <div id="inputContent" class="code-font text-xs p-3 bg-gray-950 rounded-lg text-blue-300 border border-gray-800 break-all select-all">
+                    <div id="inputContent"
+                        class="code-font text-xs p-3 bg-gray-950 rounded-lg text-blue-300 border border-gray-800 break-all select-all">
                         https://5urqyc2ccc.execute-api.ap-northeast-1.amazonaws.com/api/fire-data?iot-name=04702154615&end-date=1759827597&start-date=1759826397
                     </div>
                     <div class="mt-4 text-xs text-gray-400 leading-relaxed">
@@ -173,16 +281,20 @@
                 <div id="outputView" class="flex-1 flex flex-col hidden overflow-hidden">
                     <div class="text-xs font-bold text-gray-400 mb-2 flex justify-between items-center">
                         <span>解譯輸出交換規格 (Standardized Output Package)</span>
-                        <span class="text-[10px] bg-green-900 bg-opacity-40 text-green-300 px-2 py-0.5 rounded code-font">APPLICATION/JSON</span>
+                        <span
+                            class="text-[10px] bg-green-900 bg-opacity-40 text-green-300 px-2 py-0.5 rounded code-font">APPLICATION/JSON</span>
                     </div>
-                    <pre id="outputContent" class="code-font text-[11px] p-3 bg-gray-950 rounded-lg text-green-400 border border-gray-800 overflow-y-auto flex-1 select-all whitespace-pre-wrap"></pre>
+                    <pre id="outputContent"
+                        class="code-font text-[11px] p-3 bg-gray-950 rounded-lg text-green-400 border border-gray-800 overflow-y-auto flex-1 select-all whitespace-pre-wrap"></pre>
                 </div>
 
                 <div class="mt-4 pt-3 border-t border-gray-800 flex justify-between items-center">
-                    <button onclick="toggleTab('input')" id="btnShowInput" class="text-xs font-bold px-3 py-1.5 rounded bg-blue-600 text-white">
+                    <button onclick="toggleTab('input')" id="btnShowInput"
+                        class="text-xs font-bold px-3 py-1.5 rounded bg-blue-600 text-white">
                         檢視輸入規格
                     </button>
-                    <button onclick="toggleTab('output')" id="btnShowOutput" class="text-xs font-bold px-3 py-1.5 rounded bg-gray-800 text-gray-400 hover:text-white">
+                    <button onclick="toggleTab('output')" id="btnShowOutput"
+                        class="text-xs font-bold px-3 py-1.5 rounded bg-gray-800 text-gray-400 hover:text-white">
                         解析輸出 JSON
                     </button>
                 </div>
@@ -283,7 +395,7 @@
                         "total_amber_twp": "3", "total_amber_vil": "6",
                         "total_red_twp": "2", "total_red_vil": "3",
                         "total_rivers": "4", "total_collapse": "3",
-                        "status": "應變一級警戒", "no_data_mark": null,
+                        "status": 1, "no_data_mark": null,
                         "rpt_time": "2026-05-28T06:31:04.0000000+08:00"
                     }],
                     "timestamp": 1748390400
@@ -295,7 +407,7 @@
 
         function triggerModule(modId) {
             currentActiveModule = modId;
-            
+
             // 變更 UI 卡片啟動狀態
             for (let i = 1; i <= 4; i++) {
                 const card = document.getElementById(`mod${i}`);
@@ -310,7 +422,7 @@
             }
 
             // 更新執行按鈕文字
-            document.getElementById("executeBtn").innerText = `⚡ 點擊調用第${["一","二","三","四"][modId-1]}模組網關`;
+            document.getElementById("executeBtn").innerText = `⚡ 點擊調用第${["一", "二", "三", "四"][modId - 1]}模組網關`;
 
             // 更新中間網關的狀態文字
             document.getElementById("processStatus").innerText = mockData[modId].status;
@@ -343,7 +455,7 @@
             const tabOut = document.getElementById("tabOutput");
             const viewIn = document.getElementById("inputView");
             const viewOut = document.getElementById("outputView");
-            
+
             const btnIn = document.getElementById("btnShowInput");
             const btnOut = document.getElementById("btnShowOutput");
 
@@ -352,7 +464,7 @@
                 tabOut.className = "bg-gray-950 py-2 text-center text-xs font-bold text-gray-500 cursor-pointer";
                 viewIn.classList.remove("hidden");
                 viewOut.classList.add("hidden");
-                
+
                 btnIn.className = "text-xs font-bold px-3 py-1.5 rounded bg-blue-600 text-white";
                 btnOut.className = "text-xs font-bold px-3 py-1.5 rounded bg-gray-800 text-gray-400 hover:text-white";
             } else {
@@ -367,9 +479,10 @@
         }
 
         // 初始化載入模組一
-        window.onload = function() {
+        window.onload = function () {
             triggerModule(1);
         };
     </script>
 </body>
+
 </html>
