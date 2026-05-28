@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博誠魔塊：多模態 AI 代理人分析中樞 - 數發部防災積木元件創新賽 MVP展示</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #060913;
+        }
+
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .agent-pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.2;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.4;
+            }
+        }
+
+        .step-active {
+            border-color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+        }
+
+        .step-done {
+            border-color: #10b981;
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #34d399;
+        }
+    </style>
+</head>
+
+<body class="text-gray-200 min-h-screen flex flex-col">
+
+    <header
+        class="border-b border-gray-800 bg-gray-900 bg-opacity-80 backdrop-blur px-6 py-4 flex justify-between items-center shadow-lg">
+        <div class="flex items-center space-x-3">
+            <div class="bg-red-600 p-2 rounded-lg text-white font-bold tracking-wider text-xs">AI AGENT</div>
+            <div>
+                <h1 class="text-lg font-bold text-white tracking-wide">博誠魔塊：多模態 AI 代理人分析中樞</h1>
+                <p class="text-xs text-gray-400">競賽核心實作項目 2：多源資料聚合、跨模態校正與反向自動化應變元件</p>
+            </div>
+        </div>
+        <div class="text-xs text-gray-400 border border-gray-700 px-3 py-1.5 rounded-xl bg-gray-800">
+            團隊：<span class="text-red-400 font-bold">博誠魔塊：韌性積木災防隊</span>
+        </div>
+    </header>
+
+    <main class="flex-1 p-6 grid grid-cols-1 xl:grid-cols-12 gap-6 overflow-hidden">
+
+        <section class="xl:col-span-4 flex flex-col space-y-3">
+            <div class="bg-gray-900 bg-opacity-60 border border-gray-800 rounded-2xl p-4 flex-1 flex flex-col">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-xs font-bold text-red-400 uppercase tracking-wider flex items-center">
+                        <span class="w-2 h-2 rounded-full bg-red-500 mr-2 animate-ping"></span>
+                        1. 接收上游四大通報模組 JSON 數據
+                    </h2>
+                </div>
+                <p class="text-xs text-gray-400 mb-4">系統已就緒，自動集結來自地、空、公民科技的多模態情資。點擊下方頁籤可檢視各積木輸入之封包。</p>
+
+                <div class="grid grid-cols-4 gap-1 mb-3">
+                    <button id="btnIn1" onclick="switchInputTab(1)"
+                        class="text-[10px] py-1.5 rounded-lg bg-gray-800 font-bold text-white border border-blue-500">模組一(火災)</button>
+                    <button id="btnIn2" onclick="switchInputTab(2)"
+                        class="text-[10px] py-1.5 rounded-lg bg-gray-950 text-gray-500 font-bold hover:bg-gray-800">模組二(傾斜)</button>
+                    <button id="btnIn3" onclick="switchInputTab(3)"
+                        class="text-[10px] py-1.5 rounded-lg bg-gray-950 text-gray-500 font-bold hover:bg-gray-800">模組三(人為)</button>
+                    <button id="btnIn4" onclick="switchInputTab(4)"
+                        class="text-[10px] py-1.5 rounded-lg bg-gray-950 text-gray-500 font-bold hover:bg-gray-800">模組四(官方)</button>
+                </div>
+
+                <div
+                    class="flex-1 bg-gray-950 rounded-xl border border-gray-800 p-3 overflow-y-auto max-h-[380px] relative">
+                    <pre id="inputJsonDisplay" class="code-font text-[10px] text-blue-400 whitespace-pre-wrap"></pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="xl:col-span-4 flex flex-col space-y-3">
+            <div
+                class="bg-gray-900 bg-opacity-60 border border-gray-800 rounded-2xl p-4 flex-1 flex flex-col justify-between">
+                <div>
+                    <h2 class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-2 flex items-center">
+                        <svg class="w-4 h-4 mr-1.5 text-yellow-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
+                            </path>
+                        </svg>
+                        2. AI Agent 代理人多步驟推理核心
+                    </h2>
+                    <p class="text-xs text-gray-400 mb-4">本元件具備自主規劃、交叉驗證與外部工具(API)調用能力，能有效杜絕生成式 AI 幻覺。</p>
+                </div>
+
+                <div class="my-auto py-4 relative flex items-center justify-center">
+                    <div id="brainPulse"
+                        class="absolute w-32 h-32 rounded-full bg-red-600 bg-opacity-10 border border-red-500 border-dashed agent-pulse hidden">
+                    </div>
+                    <button id="btnStartAnalysis" onclick="startAnalysisWorkflow()"
+                        class="z-10 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold text-xs py-3 px-6 rounded-2xl shadow-xl transition transform duration-200 hover:scale-105 active:scale-95 flex items-center space-x-2">
+                        <span>⚡ 啟動全自主多模態災情分析</span>
+                    </button>
+                </div>
+
+                <div class="space-y-2 mt-2">
+                    <div id="step1"
+                        class="border border-gray-800 bg-gray-950 p-2.5 rounded-xl text-xs text-gray-500 transition-all duration-300 flex items-center">
+                        <span class="font-mono mr-2 font-bold">[STEP 1]</span> 時空特徵校正與地理圍欄對齊
+                    </div>
+                    <div id="step2"
+                        class="border border-gray-800 bg-gray-950 p-2.5 rounded-xl text-xs text-gray-500 transition-all duration-300 flex items-center">
+                        <span class="font-mono mr-2 font-bold">[STEP 2]</span> 軟硬互鎖：人為描述與物理真值交叉比對
+                    </div>
+                    <div id="step3"
+                        class="border border-gray-800 bg-gray-950 p-2.5 rounded-xl text-xs text-gray-500 transition-all duration-300 flex items-center">
+                        <span class="font-mono mr-2 font-bold">[STEP 3]</span> 工具調用：實時呼叫中央氣象署雨量 API
+                    </div>
+                    <div id="step4"
+                        class="border border-gray-800 bg-gray-950 p-2.5 rounded-xl text-xs text-gray-500 transition-all duration-300 flex items-center">
+                        <span class="font-mono mr-2 font-bold">[STEP 4]</span> 生成反向控制命令與多元應變路由
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="xl:col-span-4 flex flex-col space-y-3">
+            <div
+                class="bg-gray-900 bg-opacity-60 border border-gray-800 rounded-2xl p-4 flex-1 flex flex-col justify-between">
+                <div>
+                    <h2 class="text-xs font-bold text-green-400 uppercase tracking-wider mb-2 flex items-center">
+                        <svg class="w-4 h-4 mr-1.5 text-green-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        3. 決策輸出 JSON 規格與自動化反向應變
+                    </h2>
+                </div>
+
+                <div
+                    class="flex-1 bg-gray-955 rounded-xl border border-gray-800 p-3 overflow-y-auto max-h-[300px] mb-3 relative bg-gray-950">
+                    <div id="outputPlaceholder"
+                        class="absolute inset-0 flex items-center justify-center text-xs text-gray-600 bg-gray-950 bg-opacity-90">
+                        等待 AI Agent 推理完成後輸出...
+                    </div>
+                    <pre id="outputJsonDisplay"
+                        class="code-font text-[10px] text-green-400 whitespace-pre-wrap hidden"></pre>
+                </div>
+
+                <div id="actionPanel"
+                    class="bg-gray-950 p-3 rounded-xl border border-gray-800 space-y-2 opacity-30 transition-opacity duration-500">
+                    <div class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">自動化應變路由觸發狀態：</div>
+
+                    <div class="flex justify-between items-center p-2 bg-gray-900 border border-gray-800 rounded-lg">
+                        <span class="text-xs font-bold text-white flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-gray-600 mr-2" id="dotAction1"></span>
+                            第一線救災指揮官 LINE 告警推送
+                        </span>
+                        <span class="text-[10px] text-gray-500 font-mono" id="statusAction1">IDLE</span>
+                    </div>
+
+                    <div class="flex justify-between items-center p-2 bg-gray-900 border border-gray-800 rounded-lg">
+                        <span class="text-xs font-bold text-white flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-gray-600 mr-2" id="dotAction2"></span>
+                            博誠魔塊硬體：智慧切換高軌衛星通道
+                        </span>
+                        <span class="text-[10px] text-orange-500 font-bold cursor-pointer underline hidden"
+                            id="statusAction2" onclick="showSatelliteModal()">【反向指令】</span>
+                        <span class="text-[10px] text-gray-500 font-mono" id="statusAction2Fake">IDLE</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="satelliteModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-900 border-2 border-orange-500 p-6 rounded-2xl max-w-sm text-center shadow-2xl mx-4">
+            <div
+                class="w-12 h-12 bg-orange-950 text-orange-400 border border-orange-500 rounded-full flex items-center justify-center mx-auto mb-3 animate-bounce">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                </svg>
+            </div>
+            <h3 class="text-base font-bold text-orange-400 mb-2">博誠核心技術：反向太空控制鏈路</h3>
+            <p class="text-xs text-gray-400 leading-relaxed mb-4">
+                由於 AI 大腦精準預判馬太鞍溪極端天災將在 30 分鐘內摧毀地面行動基地台，本分析元件已自動透過 API 下達反向特權碼，強制現地魔塊終端於倒數 30 秒內<b>關閉
+                    NB-IoT，全面啟用高軌/低軌衛星雙模強韌聯網模式</b>，確保數據鏈路 100% 不中斷！
+            </p>
+            <button onclick="closeSatelliteModal()"
+                class="bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs py-2 px-5 rounded-xl transition">
+                確認收到指令 (零感知切換)
+            </button>
+        </div>
+    </div>
+
+    <footer class="bg-gray-950 text-xs text-gray-600 py-3 text-center border-t border-gray-900">
+        博誠電子魔塊架構分析元件 ── 實踐「宏觀預判、微觀保命」之全自主公民科技積木
+    </footer>
+
+    <script>
+        const inputPool = {
+            1: {
+                "success": true,
+                "message": "Fire data for station 1 retrieved successfully.",
+                "timestamp": 1748390400,
+                "data": {
+                    "station_id": 1,
+                    "timestamp": 1748390400,
+                    "tw_time": "2026-05-28 14:00:00",
+                    "rsrq_index": -82,
+                    "vbat": 3750,
+                    "temp": 87.3,
+                    "humi": 38.1,
+                    "co2": -3108,
+                    "url": "https://d65hb6cahdqvu.cloudfront.net/04702154615/1779353739.png"
+                }
+            },
+            2: {
+                "success": true,
+                "message": "Earthquake data for station 23 retrieved successfully.",
+                "timestamp": 1748390400,
+                "data": {
+                    "station_id": 23,
+                    "timestamp": 1779951869,
+                    "tw_time": "2026-05-28 15:04:29",
+                    "rsrq_index": -70,
+                    "vbat": 4141,
+                    "x_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1779849793_X_freq.png",
+                    "y_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1779849793_Y_freq.png",
+                    "z_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1779849793_Z_freq.png",
+                    "x_rms": 6,
+                    "y_rms": 197,
+                    "z_rms": 5,
+                    "P_wave": 0,
+                    "S_wave": 0
+                }
+            },
+            3: {
+                "success": true,
+                "message": "災情通報接收並處理成功",
+                "data": {
+                    "station_id": "LINE_CITIZEN_REPORT_01",
+                    "timestamp": "2026-05-28T06:00:00Z",
+                    "raw_content": "我是馬太鞍溪上游巡檢員，發現堰塞湖水位暴漲，土石流導致道路坍方，請立刻撤離！",
+                    "structured_data": {
+                        "location": "花蓮縣馬太鞍溪地區 (經確認)",
+                        "hazard_type": "LANDSLIDE",
+                        "danger_level": "CRITICAL"
+                    },
+                    "human_readable_reply": "已收到您的回報！\n通報時間：2026-05-28 14:00\n案件類型：土石流/崩塌\n地點：馬太鞍溪地區\n警急性：緊急"
+                },
+                "timestamp": 1748390400
+            },
+            4: {
+                "success": true,
+                "message": "民生物聯網災情通報資料擷取成功",
+                "timestamp": 1748390400,
+                "data": [{
+                    "city_name": "花蓮縣",
+                    "amber_rivers": "3", "amber_rivers_twp": "2", "amber_rivers_vil": "4",
+                    "red_rivers": "1", "red_rivers_twp": "1", "red_rivers_vil": "2",
+                    "amber_collapse": "2", "amber_collapse_twp": "1", "amber_collapse_vil": "2",
+                    "red_collapse": "1", "red_collapse_twp": "1", "red_collapse_vil": "1",
+                    "total_amber_twp": "3", "total_amber_vil": "6",
+                    "total_red_twp": "2", "total_red_vil": "3",
+                    "total_rivers": "4", "total_collapse": "3",
+                    "status": "應變一級警戒", "no_data_mark": null,
+                    "rpt_time": "2026-05-28T06:31:04.0000000+08:00"
+                }]
+            }
+        };
+
+        const analysisOutputJson = {
+            "analysis_id": "ANALS_MATAIA_20260527_0001",
+            "timestamp": "2026-05-27T19:16:00Z",
+            "target_disaster_event": "2025_Mataian_River_Barrier_Lake_Crisis_Simulation",
+            "ai_agent_status": {
+                "engine_mode": "Multi_Modal_Autonomous_Agent",
+                "ingested_sources": ["JSON1_Fire", "JSON2_Inclinometer", "JSON3_Human_NLP", "JSON4_EMIC_OpenData"],
+                "overall_confidence_score": 0.98
+            },
+            "disaster_assessment": {
+                "composite_risk_level": "RED_ALERT_CRITICAL",
+                "primary_hazard": "Barrier_Lake_Outflow_and_Landslide",
+                "spatiotemporal_focus": {
+                    "river_basin": "花蓮縣馬太鞍溪上游流域",
+                    "impact_radius_km": 5.0,
+                    "estimated_affected_population": 1250
+                },
+                "cross_verification_log": {
+                    "human_report_validated": true,
+                    "hardware_ground_truth_match": "MATCHED (Inclinometer Z-RMS anomalous & EMIC water level gauge critical)"
+                }
+            },
+            "autonomous_tool_execution_log": [
+                { "step": 1, "action": "QUERY_WEATHER_API", "status": "SUCCESS", "result": "Confirming rainfall exceeds 80mm/hr inside Mataian catchment." },
+                { "step": 2, "action": "ROUTE_DISPATCH_RECOMMENDATION", "status": "GENERATED", "suggested_resource": "花蓮縣消防局第三大隊特搜分隊" }
+            ],
+            "action_triggers": {
+                "broadcast_channels": [
+                    { "channel_type": "LINE_Official_Notification", "payload_message": "【緊急告警】馬太鞍溪堰塞湖邊坡監測魔塊偵測到持續滑動，結合現地通報確認已發生溢流與土石流！請立刻啟動下游居民撤離計畫！" }
+                ],
+                "blockcraft_ntn_command": {
+                    "target_hardware_group": "Mataian_Upper_Stream_IoT_Network",
+                    "instruction": "CHANGE_COMMUNICATION_MODE_TO_SURVIVAL",
+                    "payload": { "primary_link": "NTN_GEO_SATELLITE", "uplink_frequency_seconds": 60 }
+                }
+            }
+        };
+
+        function switchInputTab(tabId) {
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.getElementById(`btnIn${i}`);
+                if (i === tabId) {
+                    btn.className = "text-[10px] py-1.5 rounded-lg bg-gray-800 font-bold text-white border border-blue-500";
+                } else {
+                    btn.className = "text-[10px] py-1.5 rounded-lg bg-gray-950 text-gray-500 font-bold hover:bg-gray-800";
+                }
+            }
+            document.getElementById("inputJsonDisplay").innerText = JSON.stringify(inputPool[tabId], null, 4);
+        }
+
+        function startAnalysisWorkflow() {
+            document.getElementById("btnStartAnalysis").disabled = true;
+            document.getElementById("btnStartAnalysis").innerText = "⏳ 代理人全自主推理中...";
+            document.getElementById("brainPulse").classList.remove("hidden");
+
+            // 重置 UI 狀態
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`step${i}`).className = "border border-gray-800 bg-gray-950 p-2.5 rounded-xl text-xs text-gray-500 transition-all duration-300 flex items-center";
+            }
+
+            // 逐步執行多步驟推理動畫流程
+            setTimeout(() => {
+                document.getElementById("step1").className = "p-2.5 rounded-xl text-xs transition-all duration-300 flex items-center step-active shadow-md";
+            }, 500);
+
+            setTimeout(() => {
+                document.getElementById("step1").className = "p-2.5 rounded-xl text-xs transition-all duration-300 flex items-center step-done";
+                document.getElementById("step2").className = "p-2.5 rounded-xl text-xs transition-all duration-300 flex items-center step-active shadow-md";
+            }, 2000);
+
+            setTimeout(() => {
+                document.getElementById("step2").className = "p-2.5 rounded-xl text-xs transition-all duration-300 flex items-center step-done";
+                document.getElementById("step3").className = "p-2.5 rounded-xl text-xs transition-all duration-300 flex items-center step-active shadow-md";
+            }, 3500);
+
+            setTimeout(() => {
+                document.getElementById("step3").className = "p-2.5 rounded-xl text-xs transition-all duration-300 flex items-center step-done";
+                document.getElementById("step4").className = "p-2.5 rounded-xl text-xs transition-all duration-300 flex items-center step-active shadow-md";
+            }, 5000);
+
+            // 推理完成，輸出 JSON 結果與自動化反應聯動
+            setTimeout(() => {
+                document.getElementById("step4").className = "p-2.5 rounded-xl text-xs transition-all duration-300 flex items-center step-done";
+                document.getElementById("brainPulse").classList.add("hidden");
+                document.getElementById("btnStartAnalysis").innerText = "✓ 分析完成 (輸出決策)";
+
+                // 顯示 Output JSON (修正點：直接用 getElementById 精準選取單一元素)
+                document.getElementById("outputPlaceholder").classList.add("hidden");
+                const outFrame = document.getElementById("outputJsonDisplay");
+                outFrame.classList.remove("hidden");
+                outFrame.innerText = JSON.stringify(analysisOutputJson, null, 4);
+
+                // 啟動應變面板狀態
+                document.getElementById("actionPanel").classList.remove("opacity-30");
+
+                // 告警一狀態變更
+                document.getElementById("dotAction1").className = "w-2 h-2 rounded-full bg-red-500 animate-ping";
+                document.getElementById("statusAction1").innerHTML = "<span class='text-red-500 font-bold'>⚡ 已發送 LINE 告警</span>";
+
+                // 告警二狀態變更 (反向控制特權)
+                document.getElementById("dotAction2").className = "w-2 h-2 rounded-full bg-orange-500 animate-pulse";
+                document.getElementById("statusAction2Fake").className = "hidden";
+                document.getElementById("statusAction2").classList.remove("hidden");
+
+                // 自動彈出反向太空通訊切換控制視窗，拉滿展示現場震撼感
+                setTimeout(() => { showSatelliteModal(); }, 800);
+
+            }, 6500);
+        }
+
+        function showSatelliteModal() { document.getElementById("satelliteModal").classList.remove("hidden"); }
+        function closeSatelliteModal() { document.getElementById("satelliteModal").classList.add("hidden"); }
+
+        // 初始化
+        window.onload = function () { switchInputTab(1); };
+    </script>
+</body>
+
+</html>

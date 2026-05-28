@@ -3,15 +3,15 @@ def _ex(example):
 
 
 EXAMPLE_FIRE = _ex({
-    "statusCode": 200, "message": "Fire data for station 1 retrieved successfully.", "station_id": 1,
-    "data": {"timestamp": 1748390400, "tw_time": "2026-05-28 14:00:00", "rsrq_index": -82, "vbat": 3750,
+    "success": True, "message": "Fire data for station 1 retrieved successfully.", "timestamp": 1748390400,
+    "data": {"station_id": 1, "timestamp": 1748390400, "tw_time": "2026-05-28 14:00:00", "rsrq_index": -82, "vbat": 3750,
              "temp": 87.3, "humi": 38.1, "co2": -3108,
              "url": "https://d65hb6cahdqvu.cloudfront.net/04702154615/1779353739.png"}
 })
 
 EXAMPLE_EARTHQUAKE = _ex({
-    "statusCode": 200, "message": "Earthquake data for station 23 retrieved successfully.", "station_id": 23,
-    "data": {"timestamp": 1779951869, "tw_time": "2026-05-28 15:04:29", "rsrq_index": -70, "vbat": 4141,
+    "success": True, "message": "Earthquake data for station 23 retrieved successfully.", "timestamp": 1748390400,
+    "data": {"station_id": 23, "timestamp": 1779951869, "tw_time": "2026-05-28 15:04:29", "rsrq_index": -70, "vbat": 4141,
              "x_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1779849793_X_freq.png",
              "y_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1779849793_Y_freq.png",
              "z_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1779849793_Z_freq.png",
@@ -20,7 +20,7 @@ EXAMPLE_EARTHQUAKE = _ex({
 
 EXAMPLE_NOTIFY_FIRE = _ex({
     "success": True,
-    "message": "已收到您的回報！\n通報時間：2026-05-28 14:00\n案件類型：土石流/崩塌\n地點：馬太鞍溪地區\n警急性：緊急",
+    "message": "災情通報接收並處理成功",
     "data": {"station_id": "LINE_CITIZEN_REPORT_01", "timestamp": "2026-05-28T06:00:00Z",
              "raw_content": "我是馬太鞍溪上游巡檢員，發現堰塞湖水位暴漲，土石流導致道路坍方，請立刻撤離！",
              "structured_data": {"location": "花蓮縣馬太鞍溪地區 (經確認)", "hazard_type": "LANDSLIDE", "danger_level": "CRITICAL"},
@@ -29,15 +29,15 @@ EXAMPLE_NOTIFY_FIRE = _ex({
 })
 
 EXAMPLE_REPORT = _ex({
-    "success": True, "message": "Success", "timestamp": 1748390400,
+    "success": True, "message": "民生物聯網災情通報資料擷取成功", "timestamp": 1748390400,
     "data": [{"city_name": "花蓮縣", "amber_rivers": "3", "red_rivers": "1", "amber_collapse": "2", "red_collapse": "1",
               "total_amber_twp": "3", "total_amber_vil": "6", "total_red_twp": "2", "total_red_vil": "3",
-              "total_rivers": "4", "total_collapse": "3", "status": "應變一級警戒", "no_data_mark": None,
+              "total_rivers": "4", "total_collapse": "3", "status": 1, "no_data_mark": None,
               "rpt_time": "2026-05-28T06:31:04.0000000+08:00"}]
 })
 
 EXAMPLE_REPORT_INFO = _ex({
-    "success": True, "message": "Success", "timestamp": 1748390400,
+    "success": True, "message": "民生物聯網通報欄位說明擷取成功", "timestamp": 1748390400,
     "data": {
         "city_name": "縣市別",
         "amber_rivers": "黃色警戒土石流潛勢溪流數",

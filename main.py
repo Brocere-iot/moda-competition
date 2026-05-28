@@ -18,6 +18,7 @@ load_dotenv()
 PORT = int(os.getenv("PORT", 8000))
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 from config.response_example import EXAMPLE_FIRE, EXAMPLE_EARTHQUAKE, EXAMPLE_NOTIFY_FIRE, EXAMPLE_REPORT, EXAMPLE_REPORT_INFO
+from config.field_labels import DETAIL_FIELD_LABELS
 LINE_EXAMPLE_TEXT_MESSAGE = {"text": "馬太鞍溪上游發生土石崩塌，旁邊有人受困！"}
 
 app = FastAPI(title="通報 API")
@@ -73,7 +74,7 @@ def send_line_reply(reply_token: str, reply_text: str):
     }
     # 發送 POST 請求給 LINE 
     response = requests.post(LINE_API_URL, headers=headers, json=payload)
-    print(f"--- LINE 回傳狀態碼: {response.status_code} ---")
+    print(f"--- LINE status code: {response.status_code} ---")
 
 @app.post("/notify", responses={200: EXAMPLE_NOTIFY_FIRE})
 async def notify(payload: dict = Body(example=LINE_EXAMPLE_TEXT_MESSAGE)):
@@ -130,7 +131,7 @@ async def notify(payload: dict = Body(example=LINE_EXAMPLE_TEXT_MESSAGE)):
         # with open(f"disaster_report_{timestamp_str}.json", "w", encoding="utf-8") as f:
         #     json.dump(standard_json_output, f, ensure_ascii=False, indent=2)
 
-        return success_response(message=formatted_reply, data=standard_json_output)
+        return success_response(message="災情通報接收並處理成功", data=standard_json_output)
 
     except Exception as e:
         return {"status": "ERROR", "message": f"系統內部執行錯誤: {str(e)}"}
@@ -154,12 +155,10 @@ async def get_fire_data(station_id: int):
         )
     
     # 3. If data exists, return it. FastAPI automatically sends a real HTTP 200 status.
-    return {
-        "statusCode": 200,
-        "message": f"Fire data for station {station_id} retrieved successfully.",
-        "station_id": station_id,
-        "data": fire_data,
-        }
+    return success_response(
+        message=f"Fire data for station {station_id} retrieved successfully.",
+        data={"station_id": station_id, **fire_data}
+    )
 
 @app.get("/data/earthquake/{station_id}", responses={200: EXAMPLE_EARTHQUAKE})
 async def get_earthquake_data(station_id: int):
@@ -180,12 +179,10 @@ async def get_earthquake_data(station_id: int):
         )
     
     # 3. If data exists, return it. FastAPI automatically sends a real HTTP 200 status.
-    return {
-        "statusCode": 200,
-        "message": f"Earthquake data for station {station_id} retrieved successfully.",
-        "station_id": station_id,
-        "data": earthquake_data,
-        }
+    return success_response(
+        message=f"Earthquake data for station {station_id} retrieved successfully.",
+        data={"station_id": station_id, **earthquake_data}
+    )
 
 
 @app.get("/data/report", responses={200: EXAMPLE_REPORT})
@@ -210,36 +207,11 @@ async def get_report_data(city_name: List[str] = Query(default=None)):
             )
     rpt_time = data.get("main", {}).get("rpt_time")
     flattened = [{**city, "rpt_time": rpt_time} for city in detail]
-    return success_response(data=flattened)
-
-REPORT_FIELD_INFO = {
-    "city_name": "縣市別",
-    "amber_rivers": "黃色警戒土石流潛勢溪流數",
-    "amber_rivers_twp": "黃色警戒土石流潛勢溪流數坐落鄉鎮數",
-    "amber_rivers_vil": "黃色警戒土石流潛勢溪流數坐落村里數",
-    "red_rivers": "紅色警戒土石流潛勢溪流數",
-    "red_rivers_twp": "紅色警戒土石流潛勢溪流數坐落鄉鎮數",
-    "red_rivers_vil": "紅色警戒土石流潛勢溪流數坐落村里數",
-    "amber_collapse": "黃色警戒大規模崩塌潛勢區數",
-    "amber_collapse_twp": "黃色警戒大規模崩塌潛勢區數坐落鄉鎮數",
-    "amber_collapse_vil": "黃色警戒大規模崩塌潛勢區數坐落村里數",
-    "red_collapse": "紅色警戒大規模崩塌潛勢區數",
-    "red_collapse_twp": "紅色警戒大規模崩塌潛勢區數坐落鄉鎮數",
-    "red_collapse_vil": "紅色警戒大規模崩塌潛勢區數坐落村里數",
-    "total_amber_twp": "黃色警戒座落鄉鎮數合計",
-    "total_amber_vil": "黃色警戒座落村里數合計",
-    "total_red_twp": "紅色警戒座落鄉鎮數合計",
-    "total_red_vil": "紅色警戒座落村里數合計",
-    "total_rivers": "土石流潛勢溪流數合計",
-    "total_collapse": "大規模崩塌潛勢區處數合計",
-    "status": "狀態",
-    "no_data_mark": "無資料可填寫",
-    "rpt_time": "通報時間",
-}
+    return success_response(message="民生物聯網災情通報資料擷取成功", data=flattened)
 
 @app.get("/data/report/info", summary="民生物聯網通報欄位說明", responses={200: EXAMPLE_REPORT_INFO})
 async def get_report_field_info():
-    return success_response(data=REPORT_FIELD_INFO)
+    return success_response(message="民生物聯網通報欄位說明擷取成功", data=DETAIL_FIELD_LABELS)
 
 if __name__ == "__main__":
     print(f"Starting server on port {PORT}...")

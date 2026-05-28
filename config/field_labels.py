@@ -33,3 +33,4 @@ DETAIL_FIELD_LABELS = {
     "status": "狀態",
     "no_data_mark": "無資料可填寫",
 }
+
