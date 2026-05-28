@@ -1,11 +1,11 @@
 from fastapi import FastAPI, HTTPException, Query, status
-from typing import List
-from database.mock_db import mock_incline_data, mock_fire_data
-from utils.response_helper import success_response, error_response
+from typing import Liste
 import httpx
 import uvicorn
 import os
 from dotenv import load_dotenv
+from database.mock_db import mock_earthquake_data, mock_fire_data
+from utils.response_helper import success_response, error_response
 
 load_dotenv()
 
@@ -26,27 +26,6 @@ async def notify_land_slide():
 async def notify_fire():
     return success_response(message="Fire notification sent.")
 
-@app.get("/data/incline/{station_id}")
-async def get_incline_data(station_id: int):
-    print('ID received:', station_id)  # Debugging statement to check the received ID
-    if station_id < 0 or station_id is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, 
-            detail="Station ID must be a non-negative integer."
-        )
-    # 1. Fetch the data from your mock DB
-    incline_data = mock_incline_data(station_id=station_id)
-    
-    # 2. Check if the database actually found data for that ID
-    if not incline_data:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail=f"Station with ID {station_id} does not exist."
-        )
-    
-    # 3. If data exists, return it. FastAPI automatically sends a real HTTP 200 status.
-    return {"sensor_data": incline_data}
-
 @app.get("/data/fire/{station_id}")
 async def get_fire_data(station_id: int):
     print('ID received:', station_id)  # Debugging statement to check the received ID
@@ -56,7 +35,7 @@ async def get_fire_data(station_id: int):
             detail="Station ID must be a non-negative integer."
         )
     # 1. Fetch the data from your mock DB
-    fire_data = mock_fire_data(station_id=station_id)
+    fire_data = mock_fire_data()
     
     # 2. Check if the database actually found data for that ID
     if not fire_data:
@@ -66,7 +45,38 @@ async def get_fire_data(station_id: int):
         )
     
     # 3. If data exists, return it. FastAPI automatically sends a real HTTP 200 status.
-    return {"sensor_data": fire_data}
+    return {
+        "statusCode": 200,
+        "message": f"Fire data for station {station_id} retrieved successfully.",
+        "station_id": station_id,
+        "data": fire_data,
+        }
+
+@app.get("/data/earthquake/{station_id}")
+async def get_earthquake_data(station_id: int):
+    print('ID received:', station_id)  # Debugging statement to check the received ID
+    if station_id < 0 or station_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Station ID must be a non-negative integer."
+        )
+    # 1. Fetch the data from your mock DB
+    earthquake_data = mock_earthquake_data()
+    
+    # 2. Check if the database actually found data for that ID
+    if not earthquake_data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f"Station with ID {station_id} does not exist."
+        )
+    
+    # 3. If data exists, return it. FastAPI automatically sends a real HTTP 200 status.
+    return {
+        "statusCode": 200,
+        "message": f"Earthquake data for station {station_id} retrieved successfully.",
+        "station_id": station_id,
+        "data": earthquake_data,
+        }
 
 
 @app.get("/data/report")

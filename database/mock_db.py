@@ -1,36 +1,72 @@
 import random
-import time
-from utils.response_helper import populate_meta_data
+import time 
+from utils.response_helper import populate_meta_data, get_fft_figure_url
 
-def mock_incline_data(station_id):
+"""
+ {
+    "temp":"31.7",
+    "humi":"62.2",
+    "co2":"-3108",
+    "url":"https://d65hb6cahdqvu.cloudfront.net/04702154615/1779353739.png",
+}
+"""
+def mock_fire_data():
     current_timestamp = int(time.time())
-    mock_water_level_meter = random.uniform(0, 10)
-    mock_soil_inclination_degree = random.uniform(0, 30)
-
-    incline_data_dict = {
-        "timestamp": current_timestamp,
-        "water_level_meter": mock_water_level_meter,
-        "soil_inclination_degree": mock_soil_inclination_degree,
-        'station_id': f"Mataian_{station_id}"
-    }
-    incline_data_dict = populate_meta_data(incline_data_dict)
-
-    return incline_data_dict
-
-def mock_fire_data(station_id):
-    current_timestamp = int(time.time())
-    mock_temperature_celsius = random.uniform(15, 99)
-    mock_co2_density = random.randint(0, 10000)
+    mock_temp = round(random.uniform(20.0, 100.0), 1)  # Simulate a temperature between 20.0 and 40.0 degrees Celsius
+    mock_humi = round(random.uniform(30.0, 90.0), 1)  # Simulate a humidity between 30.0 and 90.0 percent
+    mock_co2 = random.randint(-5000, -2000)  # Simulate a CO2 level between -5000 and -2000 ppm
 
     fire_data_dict = {
         "timestamp": current_timestamp,
-        "temp": mock_temperature_celsius,
-        "co2": mock_co2_density,
-        'station_id': f"Mataian_{station_id}"
+        "temp": mock_temp,
+        "humi": mock_humi,
+        "co2": mock_co2,
+        # Hardcode the URL with real data
+        "url": "https://d65hb6cahdqvu.cloudfront.net/04702154615/1779353739.png",
     }
     fire_data_dict = populate_meta_data(fire_data_dict)
 
     return fire_data_dict
+
+"""
+    {
+        "x_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1760604191_X_freq.png",
+        "y_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1760604191_Y_freq.png",
+        "z_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1760604191_Z_freq.png",
+        "x_rms": "7",
+        "y_rms": "276",
+        "z_rms": "5",
+        "P_wave":"0",
+        "S_wave":"1",
+        "timestamp": 1760604221,
+        "tw_time": "2025-10-16 16:43:41",
+        "rsrq_index": 0,
+        "vbat": "4156"
+    }
+"""
+
+def mock_earthquake_data():
+    current_timestamp = int(time.time())
+    x_rms = random.randint(0, 10)
+    y_rms = random.randint(0, 300)
+    z_rms = random.randint(0, 10)
+    P_wave = random.choice([0, 1])
+    S_wave = random.choice([0, 1])
+
+    earthquake_data_dict = {
+        "timestamp": current_timestamp,
+        "x_freq_fft_figure": get_fft_figure_url("X"),
+        "y_freq_fft_figure": get_fft_figure_url("Y"),
+        "z_freq_fft_figure": get_fft_figure_url("Z"),
+        "x_rms": x_rms,
+        "y_rms": y_rms,
+        "z_rms": z_rms,
+        "P_wave": P_wave,
+        "S_wave": S_wave,
+    }
+    earthquake_data_dict = populate_meta_data(earthquake_data_dict)
+
+    return earthquake_data_dict
 
 def mock_report_data(report_id):
     cities = [
