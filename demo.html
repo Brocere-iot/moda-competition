@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博誠魔塊：多模態模組化情報中樞 - 數發部防災積木元件創新賽 MVP展示</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #0b0f19; }
+        .code-font { font-family: 'JetBrains Mono', monospace; }
+        .glow-effect { transition: all 0.3s ease; }
+        .glow-effect:hover { box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
+        .active-card { border-color: #3b82f6; background-color: rgba(30, 41, 59, 0.8); box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+        @keyframes pulse-line { 0%, 100% { opacity: 0.4; stroke-width: 2; } 50% { opacity: 1; stroke-width: 4; stroke: #3b82f6; } }
+        .pulsing-path { animation: pulse-line 2s infinite; }
+    </style>
+</head>
+<body class="text-gray-100 min-h-screen flex flex-col">
+
+    <header class="border-b border-gray-800 bg-gray-900 bg-opacity-70 backdrop-blur px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="bg-blue-600 p-2 rounded-lg text-white font-bold tracking-wider text-sm">Blockcraft</div>
+            <div>
+                <h1 class="text-lg font-bold text-white tracking-wide">博誠魔塊：韌性積木災防隊</h1>
+                <p class="text-xs text-gray-400">數位發展部「防災積木元件創新賽」應變實證 MVP 系統</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4 text-xs text-gray-400">
+            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-ping"></span>網關核心：API 服務型元件已就緒</span>
+            <span class="border border-gray-700 px-2 py-1 rounded bg-gray-800">2026 競賽專用規格版本</span>
+        </div>
+    </header>
+
+    <main class="flex-1 p-6 grid grid-cols-1 xl:grid-cols-12 gap-6 overflow-hidden">
+        
+        <section class="xl:col-span-4 flex flex-col space-y-4">
+            <div class="bg-gray-900 bg-opacity-50 border border-gray-800 rounded-xl p-4">
+                <h2 class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-3 flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
+                    步驟 1：選擇多模態測站/通報源進行資料觸發
+                </h2>
+                <p class="text-xs text-gray-400 mb-4">點擊下方任一防災積木源，即可發起 API 請求封包，查看完整路由分析流向。</p>
+                
+                <div class="space-y-3">
+                    <div id="mod1" onclick="triggerModule(1)" class="glow-effect border border-gray-800 bg-gray-900 bg-opacity-80 rounded-xl p-4 flex items-center justify-between cursor-pointer active-card">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-16 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700 relative overflow-hidden">
+                                <span class="absolute top-1 left-1 text-[8px] bg-red-900 text-red-300 px-1 rounded font-bold">FIRE</span>
+                                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A8 8 0 0117.657 18.657z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white">模組一：魔塊火災監測 IoT</h3>
+                                <p class="text-xs text-gray-400">元件型態：IOT5_Fire.png</p>
+                                <span class="text-[10px] text-red-400 font-mono bg-red-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">測量指標：IR, CO2, TEMP</span>
+                            </div>
+                        </div>
+                        <div class="text-blue-500" id="arrow1">
+                            <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    </div>
+
+                    <div id="mod2" onclick="triggerModule(2)" class="glow-effect border border-gray-800 bg-gray-900 bg-opacity-40 rounded-xl p-4 flex items-center justify-between cursor-pointer">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-16 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700 relative overflow-hidden">
+                                <span class="absolute top-1 left-1 text-[8px] bg-orange-900 text-orange-300 px-1 rounded font-bold">SLOPE</span>
+                                <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white">模組二：地震/傾斜感測 IoT</h3>
+                                <p class="text-xs text-gray-400">元件型態：blockcraft+logo.png</p>
+                                <span class="text-[10px] text-orange-400 font-mono bg-orange-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">測量指標：傾斜, 高頻震動(FFT)</span>
+                            </div>
+                        </div>
+                        <div class="text-gray-600" id="arrow2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    </div>
+
+                    <div id="mod3" onclick="triggerModule(3)" class="glow-effect border border-gray-800 bg-gray-900 bg-opacity-40 rounded-xl p-4 flex items-center justify-between cursor-pointer">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-16 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700 relative overflow-hidden">
+                                <span class="absolute top-1 left-1 text-[8px] bg-green-950 text-green-300 px-1 rounded font-bold">HUMAN</span>
+                                <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 002-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white">模組三：現場公民隨手通報</h3>
+                                <p class="text-xs text-gray-400">通訊載體：智慧手機 / LINE 介面</p>
+                                <span class="text-[10px] text-green-400 font-mono bg-green-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">通報機制：衛星鏈路 / 語意分析</span>
+                            </div>
+                        </div>
+                        <div class="text-gray-600" id="arrow3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    </div>
+
+                    <div id="mod4" onclick="triggerModule(4)" class="glow-effect border border-gray-800 bg-gray-900 bg-opacity-40 rounded-xl p-4 flex items-center justify-between cursor-pointer">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-16 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700 relative overflow-hidden">
+                                <span class="absolute top-1 left-1 text-[8px] bg-teal-900 text-teal-300 px-1 rounded font-bold">GOV</span>
+                                <svg class="w-8 h-8 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white">模組四：民生物聯網官方介接</h3>
+                                <p class="text-xs text-gray-400">來源對象：NCDR / 國家應變中心庫</p>
+                                <span class="text-[10px] text-teal-400 font-mono bg-teal-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">鏈結機制：OpenData 整合交換</span>
+                            </div>
+                        </div>
+                        <div class="text-gray-600" id="arrow4">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="xl:col-span-3 flex flex-col justify-between space-y-4">
+            <div class="bg-gray-900 bg-opacity-50 border border-gray-800 rounded-xl p-4 flex-1 flex flex-col justify-center items-center relative">
+                <div class="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
+                    <svg class="w-full h-64" viewBox="0 0 200 200" fill="none">
+                        <path class="pulsing-path" d="M 0,50 Q 100,100 200,50" stroke="#1e40af" stroke-width="2" fill="none" />
+                        <path class="pulsing-path" d="M 0,150 Q 100,100 200,150" stroke="#1e40af" stroke-width="2" fill="none" />
+                    </svg>
+                </div>
+
+                <div class="z-10 text-center px-4 py-8 bg-gray-950 rounded-2xl border border-blue-900 border-opacity-50 max-w-xs shadow-2xl">
+                    <div class="w-16 h-16 bg-blue-600 bg-opacity-20 rounded-full border border-blue-500 flex items-center justify-center mx-auto mb-4 animate-pulse">
+                        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    </div>
+                    <h3 class="text-sm font-bold tracking-wider text-blue-400 uppercase mb-1">API 服務型處理元件</h3>
+                    <p class="text-[11px] text-gray-400">Intelligent API Engine</p>
+                    
+                    <div class="mt-6 p-2 bg-gray-900 rounded-lg border border-gray-800 text-left">
+                        <div class="text-[10px] text-gray-500 uppercase tracking-tight font-bold">元件調用邏輯：</div>
+                        <div id="processStatus" class="text-xs text-green-400 font-mono mt-1">✓ 監聽模組一通告請求...</div>
+                    </div>
+                </div>
+
+                <div id="mod4BtnContainer" class="mt-4 z-10 hidden">
+                    <button onclick="executeMod4Query()" class="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold py-2 px-4 rounded-xl shadow-lg transition duration-200 animate-bounce">
+                        ⚡ 點擊調用第四模組網關
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="xl:col-span-5 flex flex-col space-y-4">
+            <div class="grid grid-cols-2 gap-2">
+                <div id="tabInput" class="bg-gray-900 border-b-2 border-blue-500 py-2 text-center text-xs font-bold text-blue-400 cursor-pointer">
+                    1. 請求內容 (Input)
+                </div>
+                <div id="tabOutput" class="bg-gray-950 py-2 text-center text-xs font-bold text-gray-500 cursor-pointer">
+                    2. 交換規格 (Output JSON)
+                </div>
+            </div>
+
+            <div class="bg-gray-900 bg-opacity-80 border border-gray-800 rounded-xl p-4 flex-1 flex flex-col justify-between overflow-hidden min-h-[450px]">
+                
+                <div id="inputView" class="flex-1 flex flex-col overflow-y-auto">
+                    <div class="text-xs font-bold text-gray-400 mb-2 flex justify-between items-center">
+                        <span>網址端點 / 文本格式 (Endpoint / Raw text)</span>
+                        <span class="text-[10px] bg-blue-900 bg-opacity-40 text-blue-300 px-2 py-0.5 rounded code-font" id="httpMethod">GET</span>
+                    </div>
+                    <div id="inputContent" class="code-font text-xs p-3 bg-gray-950 rounded-lg text-blue-300 border border-gray-800 break-all select-all">
+                        https://5urqyc2ccc.execute-api.ap-northeast-1.amazonaws.com/api/fire-data?iot-name=04702154615&end-date=1759827597&start-date=1759826397
+                    </div>
+                    <div class="mt-4 text-xs text-gray-400 leading-relaxed">
+                        <span class="font-bold text-white block mb-1">💡 元件處理行為說明：</span>
+                        <p id="behaviorDesc">當博誠邊緣端火災監測魔塊聯網時，系統主動採集包含紅外熱顯像、二氧化碳、周圍溫度等微觀真值指標，並透過此結構化 API 向中央網關回傳數據。</p>
+                    </div>
+                </div>
+
+                <div id="outputView" class="flex-1 flex flex-col hidden overflow-hidden">
+                    <div class="text-xs font-bold text-gray-400 mb-2 flex justify-between items-center">
+                        <span>解譯輸出交換規格 (Standardized Output Package)</span>
+                        <span class="text-[10px] bg-green-900 bg-opacity-40 text-green-300 px-2 py-0.5 rounded code-font">APPLICATION/JSON</span>
+                    </div>
+                    <pre id="outputContent" class="code-font text-[11px] p-3 bg-gray-950 rounded-lg text-green-400 border border-gray-800 overflow-y-auto flex-1 select-all whitespace-pre-wrap"></pre>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-gray-800 flex justify-between items-center">
+                    <button onclick="toggleTab('input')" id="btnShowInput" class="text-xs font-bold px-3 py-1.5 rounded bg-blue-600 text-white">
+                        檢視輸入規格
+                    </button>
+                    <button onclick="toggleTab('output')" id="btnShowOutput" class="text-xs font-bold px-3 py-1.5 rounded bg-gray-800 text-gray-400 hover:text-white">
+                        解析輸出 JSON
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-950 text-xs text-gray-500 py-3 px-6 text-center border-t border-gray-900">
+        博誠電子魔塊架構內嵌「非對稱多軌衛星智慧融合技術」— 平時99%以低成本地面聯網，災時30秒內無縫切換高低軌衛星，捍衛極端災變數位生命線。
+    </footer>
+
+    <script>
+        const mockData = {
+            1: {
+                method: "GET",
+                input: "https://5urqyc2ccc.execute-api.ap-northeast-1.amazonaws.com/api/fire-data?iot-name=04702154615&end-date=1759827597&start-date=1759826397",
+                desc: "當博誠邊緣端火災監測魔塊 (IOT5_Fire.png) 聯網時，系統主動採集包含紅外熱顯像、二氧化碳、周圍溫度等微觀真值指標，並透過此結構化 API 向中央網關回傳數據。",
+                status: "✓ 解析火災感測器數據...\n✓ 壓縮傳輸特徵碼...",
+                json: {
+                    "statusCode": 200,
+                    "message": "Fetched data for 04702154615",
+                    "iot-name": "04702154615",
+                    "start-date": 1759818933,
+                    "end-date": 1759905333,
+                    "max-len": 1,
+                    "data": [
+                        {
+                            "temp": "31.7",
+                            "humi": "62.2",
+                            "rsrq_index": "17",
+                            "url": "https://d65hb6cahdqvu.cloudfront.net/04702154615/1759905263.png",
+                            "vbat": "3637",
+                            "co2": "-3108",
+                            "timestamp": 1759905263,
+                            "tw_time": "2025-10-08 14:34:23"
+                        }
+                    ]
+                }
+            },
+            2: {
+                method: "GET",
+                input: "https://5urqyc2ccc.execute-api.ap-northeast-1.amazonaws.com/api/fft-data?iot-name=04702154614&end-date=1760604221&start-date=1760603981",
+                desc: "部署在偏遠邊坡土石流高風險區的魔塊 (blockcraft+logo.png)，偵測到結構體或坡地異常傾斜移位與高頻振動。API 將回傳經邊緣端快速傅立葉轉換 (FFT) 後的三軸圖資與 P/S 波能量指標。",
+                status: "✓ 地震/傾斜閥值判定成功\n✓ 執行高頻 FFT 圖資轉換...",
+                json: {
+                    "statusCode": 200,
+                    "message": "Fetched FFT data for device 04702154614",
+                    "iot-name": "04702154614",
+                    "start-date": 1760603981,
+                    "end-date": 1760604221,
+                    "max-len": 1,
+                    "data": [
+                        {
+                            "x_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1760604191_X_freq.png",
+                            "y_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1760604191_Y_freq.png",
+                            "z_freq_fft_figure": "https://d82xcsxd0ol35.cloudfront.net/04702154614/1760604191_Z_freq.png",
+                            "x_rms": "7",
+                            "y_rms": "276",
+                            "z_rms": "5",
+                            "P_wave": "0",
+                            "S_wave": "1"
+                        }
+                    ]
+                }
+            },
+            3: {
+                method: "POST_TEXT",
+                input: "「我是馬太鞍溪上游巡檢員，剛剛大雨不停，發現堰塞湖水位暴漲已經開始溢流了！而且旁邊山壁發生土石流導致道路坍方，目前手機完全沒有行动通訊訊號，我是透過魔塊衛星發出這條 SOS 求救，請指揮中心立刻派人撤離下游居民！」",
+                desc: "極端災變導致馬太鞍溪現地地面行動基地台癱瘓時，第一線人員發送白話文字通報。博誠 API 元件內嵌 AI NLP 自然語言處理解譯大腦，能在 0.5 秒內咬住防汛、土石流等公共安全關鍵字，轉譯為結構化標準 JSON 格式以利系統整合。",
+                status: "✓ 開啟 AI 語意智能中樞\n✓ 自主分析多步驟決策中...",
+                json: {
+                    "report_id": "MATAIA_20260527_0012",
+                    "timestamp": "2026-05-27T19:15:30Z",
+                    "source_channel": "Satellite_SMS_Bridge",
+                    "network_telemetry": {
+                        "carrier": "Brocere_NTN_Network",
+                        "mode": "NTN_GEO_SATELLITE",
+                        "rssi": -118,
+                        "latency_ms": 650
+                    },
+                    "raw_input_text": "我是馬太鞍溪上游巡檢員，剛剛大雨不停，發現堰塞湖水位暴漲已經開始溢流了！而且旁邊山壁發生土石流導致道路坍方，目前手機完全沒有行动通訊訊號，我是透過魔塊衛星發出這條 SOS 求救，請指揮中心立刻派人撤離下游居民！",
+                    "ai_nlp_analysis": {
+                        "primary_disaster_type": "Barrier_Lake_Overflow",
+                        "secondary_disaster_type": "Debris_Flow",
+                        "threat_level": "CRITICAL",
+                        "confidence_score": 0.96,
+                        "extracted_keywords": ["水位暴漲", "堰塞湖溢流", "發生土石流", "道路坍方", "沒有行動通訊訊號", "SOS", "立刻派人"]
+                    },
+                    "extracted_entities": {
+                        "location": {
+                            "reported_place": "花蓮縣馬太鞍溪上游堰塞湖",
+                            "latitude": 23.6342,
+                            "longitude": 121.3856,
+                            "coordinate_accuracy": "GPS_High_Precision"
+                        },
+                        "impact_objects": ["下游居民", "聯外道路"],
+                        "urgent_requests": ["人員撤離", "搜救派遣"]
+                    },
+                    "blockcraft_iot_fusion": {
+                        "trigger_hardware_cross_check": true,
+                        "target_sensor_modules": [
+                            { "sensor_type": "Radar_Water_Level_Gauge", "action": "QUERY_GROUND_TRUTH", "expected_field": "water_level_meter" },
+                            { "sensor_type": "3D_Inclinometer_Vibration", "action": "QUERY_GROUND_TRUTH", "expected_field": "slope_displacement_deg" }
+                        ],
+                        "edge_ai_camera_trigger": "CAPTURE_COMPRESSED_FEATURE_CODE"
+                    },
+                    "system_routing_action": {
+                        "next_component_api": "https://api.civictech.moda.gov.tw/v1/disaster/management/dispatch",
+                        "data_format_version": "v1.2.0-JSON-Schema",
+                        "broadcast_to_ncdr_cap": true
+                    }
+                }
+            },
+            4: {
+                method: "QUERY_OPEN_DATA",
+                input: "正在對接民生公共物聯網平台開放數據規格檔...\n網址來源：https://portal2.emic.gov.tw/Pub/ERA2/OpenData/ERA2_C4.json",
+                desc: "按下方『點擊調用第四模組網關』按鈕，API 服務元件將模擬實時串接內政部消防署中央災害應變中心 (EMIC) 體系資料，輸出符合政府開放資料標準與 CAP 防災協議的民生公共物聯網大數據交換包。",
+                status: "✓ 等待外部中繼觸發命令...",
+                json: {
+                    "success": true,
+                    "dataset_name": "ERA2_C4_EMIC_Central_Alerts",
+                    "updated_time": "2026-05-27T21:30:00+08:00",
+                    "records": [
+                        {
+                            "alert_id": "EMIC-2026-00981",
+                            "event_type": "堰塞湖水位警戒及邊坡防汛",
+                            "severity": "應變一級警戒",
+                            "location": "花蓮縣萬榮鄉馬太鞍溪上游流域",
+                            "description": "歷史花蓮馬太鞍溪堰塞湖情境追蹤演練：現地站點監測到集水區累積降雨異常，河道流量及堰塞湖蓄水位達一級預警閥值，請下游相關防災單位注意疏散準備與水情通報。",
+                            "source_agency": "消防署中央災害應變中心(EMIC)"
+                        }
+                    ]
+                }
+            }
+        };
+
+        let currentActiveModule = 1;
+
+        function triggerModule(modId) {
+            currentActiveModule = modId;
+            
+            // 變更 UI 卡片啟動狀態
+            for (let i = 1; i <= 4; i++) {
+                const card = document.getElementById(`mod${i}`);
+                const arrow = document.getElementById(`arrow${i}`);
+                if (i === modId) {
+                    card.className = "glow-effect border border-blue-500 bg-gray-900 bg-opacity-80 rounded-xl p-4 flex items-center justify-between cursor-pointer active-card";
+                    arrow.className = "text-blue-500 animate-pulse";
+                } else {
+                    card.className = "glow-effect border border-gray-800 bg-gray-900 bg-opacity-40 rounded-xl p-4 flex items-center justify-between cursor-pointer";
+                    arrow.className = "text-gray-600";
+                }
+            }
+
+            // 特殊處理模組四按鈕顯示
+            if (modId === 4) {
+                document.getElementById("mod4BtnContainer").classList.remove("hidden");
+            } else {
+                document.getElementById("mod4BtnContainer").classList.add("hidden");
+            }
+
+            // 更新中間網關的狀態文字
+            document.getElementById("processStatus").innerText = mockData[modId].status;
+
+            // 更新右側 Input 資訊
+            document.getElementById("httpMethod").innerText = mockData[modId].method;
+            document.getElementById("inputContent").innerText = mockData[modId].input;
+            document.getElementById("behaviorDesc").innerText = mockData[modId].desc;
+
+            // 格式化寫入 JSON 內容
+            document.getElementById("outputContent").innerText = JSON.stringify(mockData[modId].json, null, 4);
+
+            // 自動切換到輸入視窗
+            toggleTab('input');
+        }
+
+        function executeMod4Query() {
+            // 模擬點擊 API 服務型元件觸發民生物聯網介接行為
+            document.getElementById("processStatus").innerText = "✓ 成功調用民生物聯網資料庫!\n✓ 數據同步封包封裝完畢.";
+            toggleTab('output');
+        }
+
+        function toggleTab(type) {
+            const tabIn = document.getElementById("tabInput");
+            const tabOut = document.getElementById("tabOutput");
+            const viewIn = document.getElementById("inputView");
+            const viewOut = document.getElementById("outputView");
+            
+            const btnIn = document.getElementById("btnShowInput");
+            const btnOut = document.getElementById("btnShowOutput");
+
+            if (type === 'input') {
+                tabIn.className = "bg-gray-900 border-b-2 border-blue-500 py-2 text-center text-xs font-bold text-blue-400 cursor-pointer";
+                tabOut.className = "bg-gray-950 py-2 text-center text-xs font-bold text-gray-500 cursor-pointer";
+                viewIn.classList.remove("hidden");
+                viewOut.classList.add("hidden");
+                
+                btnIn.className = "text-xs font-bold px-3 py-1.5 rounded bg-blue-600 text-white";
+                btnOut.className = "text-xs font-bold px-3 py-1.5 rounded bg-gray-800 text-gray-400 hover:text-white";
+            } else {
+                tabOut.className = "bg-gray-900 border-b-2 border-green-500 py-2 text-center text-xs font-bold text-green-400 cursor-pointer";
+                tabIn.className = "bg-gray-950 py-2 text-center text-xs font-bold text-gray-500 cursor-pointer";
+                viewOut.classList.remove("hidden");
+                viewIn.classList.add("hidden");
+
+                btnOut.className = "text-xs font-bold px-3 py-1.5 rounded bg-green-600 text-white";
+                btnIn.className = "text-xs font-bold px-3 py-1.5 rounded bg-gray-800 text-gray-400 hover:text-white";
+            }
+        }
+
+        // 初始化載入模組一
+        window.onload = function() {
+            triggerModule(1);
+        };
+    </script>
+</body>
+</html>
