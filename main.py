@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException, Query, status, Body
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
+
+from starlette.responses import FileResponse
 from utils.response_helper import success_response, error_response
 from database.mock_db import mock_incline_data, mock_fire_data
 import httpx
@@ -28,6 +30,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# --- SERVE STATIC HTML FROM ROOT ---
+@app.get("/", include_in_schema=False)
+async def root():
+    return FileResponse("call.html")
 
 def parse_disaster_message(text: str) -> dict:
     """
