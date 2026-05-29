@@ -101,7 +101,7 @@
                             </div>
                             <div>
                                 <h3 class="text-sm font-bold text-white">模組一：魔塊火災監測 IoT</h3>
-                                <p class="text-xs text-gray-400">元件型態：IOT5_Fire.png</p>
+                                <p class="text-xs text-gray-400">元件型態：IOT5_Fire</p>
                                 <span
                                     class="text-[10px] text-red-400 font-mono bg-red-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">測量指標：IR,
                                     CO2, TEMP</span>
@@ -130,7 +130,7 @@
                             </div>
                             <div>
                                 <h3 class="text-sm font-bold text-white">模組二：地震/傾斜感測 IoT</h3>
-                                <p class="text-xs text-gray-400">元件型態：blockcraft+logo.png</p>
+                                <p class="text-xs text-gray-400">元件型態：IOT5_landslide</p>
                                 <span
                                     class="text-[10px] text-orange-400 font-mono bg-orange-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">測量指標：傾斜,
                                     高頻震動(FFT)</span>
@@ -159,7 +159,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="text-sm font-bold text-white">模組三：現場公民隨手通報</h3>
+                                <h3 class="text-sm font-bold text-white">模組三：現場人員通報</h3>
                                 <p class="text-xs text-gray-400">通訊載體：智慧手機 / LINE 介面</p>
                                 <span
                                     class="text-[10px] text-green-400 font-mono bg-green-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">通報機制：衛星鏈路
@@ -189,7 +189,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="text-sm font-bold text-white">模組四：民生物聯網官方介接</h3>
+                                <h3 class="text-sm font-bold text-white">模組四：民生公共物聯網資料庫介接</h3>
                                 <p class="text-xs text-gray-400">來源對象：NCDR / 國家應變中心庫</p>
                                 <span
                                     class="text-[10px] text-teal-400 font-mono bg-teal-950 bg-opacity-50 px-1.5 py-0.5 rounded mt-1 inline-block">鏈結機制：OpenData
@@ -311,7 +311,7 @@
             1: {
                 method: "GET",
                 input: "http://localhost:8000/data/fire/1",
-                desc: "當博誠邊緣端火災監測魔塊 (IOT5_Fire.png) 聯網時，系統主動採集包含紅外熱顯像、二氧化碳、周圍溫度等微觀真值指標，並透過此結構化 API 向中央網關回傳數據。",
+                desc: "當博誠邊緣端火災監測魔塊 (IOT5_Fire) 聯網時，系統主動採集包含紅外熱顯像、二氧化碳、周圍溫度等微觀真值指標，並透過此結構化 API 向中央網關回傳數據。",
                 status: "✓ 解析火災感測器數據...\n✓ 壓縮傳輸特徵碼...",
                 json: {
                     "success": true,
@@ -333,7 +333,7 @@
             2: {
                 method: "GET",
                 input: "http://localhost:8000/data/earthquake/1",
-                desc: "部署在偏遠邊坡土石流高風險區的魔塊 (blockcraft+logo.png)，偵測到結構體或坡地異常傾斜移位與高頻振動。API 將回傳經邊緣端快速傅立葉轉換 (FFT) 後的三軸圖資與 P/S 波能量指標。",
+                desc: "部署在偏遠邊坡土石流高風險區的魔塊 (IOT5_landslide)，偵測到結構體或坡地異常傾斜移位與高頻振動。API 將回傳經邊緣端快速傅立葉轉換 (FFT) 後的三軸圖資與 P/S 波能量指標。",
                 status: "✓ 地震/傾斜閥值判定成功\n✓ 執行高頻 FFT 圖資轉換...",
                 json: {
                     "success": true,
@@ -358,24 +358,77 @@
             },
             3: {
                 method: "POST",
-                input: "http://localhost:8000/notify\n\nRequest Body:\n{\n    \"text\": \"馬太鞍溪上游發生土石崩塌，旁邊有人受困！\"\n}",
+                input: "http://localhost:8000/notify\n\nRequest Body:\n{\n    \"text\": \"我是馬太鞍溪上游巡檢員，剛剛大雨不停，發現堰塞湖水位暴漲已經開始溢流了！而且旁邊山壁發生土石流導致道路坍方，目前手機完全沒有行動通訊訊號，我是透過魔塊衛星發出這條 SOS 求救，請指揮中心立刻派人撤離下游居民！\"\n}",
                 desc: "極端災變導致馬太鞍溪現地地面行動基地台癱瘓時，第一線人員發送白話文字通報。博誠 API 元件內嵌關鍵字語意解析，能快速識別防汛、土石流等公共安全關鍵字，轉譯為結構化標準 JSON 格式以利系統整合。",
                 status: "✓ 開啟語意分析中樞\n✓ 自主分析多步驟決策中...",
                 json: {
                     "success": true,
                     "message": "災情通報接收並處理成功",
                     "data": {
-                        "station_id": "LINE_CITIZEN_REPORT_01",
-                        "timestamp": "2026-05-28T06:00:00Z",
-                        "raw_content": "馬太鞍溪上游發生土石崩塌，旁邊有人受困！",
-                        "structured_data": {
-                            "location": "花蓮縣馬太鞍溪地區 (經確認)",
-                            "hazard_type": "LANDSLIDE",
-                            "danger_level": "CRITICAL"
+                        "report_id": "MATAIA_20260527_0012",
+                        "timestamp": "2026-05-27T19:15:30Z",
+                        "source_channel": "Satellite_SMS_Bridge",
+                        "network_telemetry": {
+                            "carrier": "Brocere_NTN_Network",
+                            "mode": "NTN_GEO_SATELLITE",
+                            "rssi": -118,
+                            "latency_ms": 650
                         },
-                        "human_readable_reply": "已收到您的回報！\n通報時間：2026-05-28 14:00\n案件類型：土石流/崩塌\n地點：馬太鞍溪地區\n警急性：緊急"
+                        "raw_input_text": "我是馬太鞍溪上游巡檢員，剛剛大雨不停，發現堰塞湖水位暴漲已經開始溢流了！而且旁邊山壁發生土石流導致道路坍方，目前手機完全沒有行動通訊訊號，我是透過魔塊衛星發出這條 SOS 求救，請指揮中心立刻派人撤離下游居民！",
+                        "ai_nlp_analysis": {
+                            "primary_disaster_type": "Barrier_Lake_Overflow",
+                            "secondary_disaster_type": "Debris_Flow",
+                            "threat_level": "CRITICAL",
+                            "confidence_score": 0.96,
+                            "extracted_keywords": [
+                                "水位暴漲",
+                                "堰塞湖溢流",
+                                "發生土石流",
+                                "道路坍方",
+                                "沒有行動通訊訊號",
+                                "SOS",
+                                "立刻派人"
+                            ]
+                        },
+                        "extracted_entities": {
+                            "location": {
+                                "reported_place": "花蓮縣馬太鞍溪上游堰塞湖",
+                                "latitude": 23.6342,
+                                "longitude": 121.3856,
+                                "coordinate_accuracy": "GPS_High_Precision"
+                            },
+                            "impact_objects": [
+                                "下游居民",
+                                "聯外道路"
+                            ],
+                            "urgent_requests": [
+                                "人員撤離",
+                                "搜救派遣"
+                            ]
+                        },
+                        "blockcraft_iot_fusion": {
+                            "trigger_hardware_cross_check": true,
+                            "target_sensor_modules": [
+                                {
+                                    "sensor_type": "Radar_Water_Level_Gauge",
+                                    "action": "QUERY_GROUND_TRUTH",
+                                    "expected_field": "water_level_meter"
+                                },
+                                {
+                                    "sensor_type": "3D_Inclinometer_Vibration",
+                                    "action": "QUERY_GROUND_TRUTH",
+                                    "expected_field": "slope_displacement_deg"
+                                }
+                            ],
+                            "edge_ai_camera_trigger": "CAPTURE_COMPRESSED_FEATURE_CODE"
+                        },
+                        "system_routing_action": {
+                            "next_component_api": "https://api.civictech.moda.gov.tw/v1/disaster/management/dispatch",
+                            "data_format_version": "v1.2.0-JSON-Schema",
+                            "broadcast_to_ncdr_cap": true
+                        }
                     },
-                    "timestamp": 1748390400
+                    "timestamp": 1780024258
                 }
             },
             4: {

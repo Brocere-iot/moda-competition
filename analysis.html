@@ -260,17 +260,70 @@
                 "success": true,
                 "message": "災情通報接收並處理成功",
                 "data": {
-                    "station_id": "LINE_CITIZEN_REPORT_01",
-                    "timestamp": "2026-05-28T06:00:00Z",
-                    "raw_content": "我是馬太鞍溪上游巡檢員，發現堰塞湖水位暴漲，土石流導致道路坍方，請立刻撤離！",
-                    "structured_data": {
-                        "location": "花蓮縣馬太鞍溪地區 (經確認)",
-                        "hazard_type": "LANDSLIDE",
-                        "danger_level": "CRITICAL"
+                    "report_id": "MATAIA_20260527_0012",
+                    "timestamp": "2026-05-27T19:15:30Z",
+                    "source_channel": "Satellite_SMS_Bridge",
+                    "network_telemetry": {
+                        "carrier": "Brocere_NTN_Network",
+                        "mode": "NTN_GEO_SATELLITE",
+                        "rssi": -118,
+                        "latency_ms": 650
                     },
-                    "human_readable_reply": "已收到您的回報！\n通報時間：2026-05-28 14:00\n案件類型：土石流/崩塌\n地點：馬太鞍溪地區\n警急性：緊急"
+                    "raw_input_text": "我是馬太鞍溪上游巡檢員，剛剛大雨不停，發現堰塞湖水位暴漲已經開始溢流了！而且旁邊山壁發生土石流導致道路坍方，目前手機完全沒有行動通訊訊號，我是透過魔塊衛星發出這條 SOS 求救，請指揮中心立刻派人撤離下游居民！",
+                    "ai_nlp_analysis": {
+                        "primary_disaster_type": "Barrier_Lake_Overflow",
+                        "secondary_disaster_type": "Debris_Flow",
+                        "threat_level": "CRITICAL",
+                        "confidence_score": 0.96,
+                        "extracted_keywords": [
+                            "水位暴漲",
+                            "堰塞湖溢流",
+                            "發生土石流",
+                            "道路坍方",
+                            "沒有行動通訊訊號",
+                            "SOS",
+                            "立刻派人"
+                        ]
+                    },
+                    "extracted_entities": {
+                        "location": {
+                            "reported_place": "花蓮縣馬太鞍溪上游堰塞湖",
+                            "latitude": 23.6342,
+                            "longitude": 121.3856,
+                            "coordinate_accuracy": "GPS_High_Precision"
+                        },
+                        "impact_objects": [
+                            "下游居民",
+                            "聯外道路"
+                        ],
+                        "urgent_requests": [
+                            "人員撤離",
+                            "搜救派遣"
+                        ]
+                    },
+                    "blockcraft_iot_fusion": {
+                        "trigger_hardware_cross_check": true,
+                        "target_sensor_modules": [
+                            {
+                                "sensor_type": "Radar_Water_Level_Gauge",
+                                "action": "QUERY_GROUND_TRUTH",
+                                "expected_field": "water_level_meter"
+                            },
+                            {
+                                "sensor_type": "3D_Inclinometer_Vibration",
+                                "action": "QUERY_GROUND_TRUTH",
+                                "expected_field": "slope_displacement_deg"
+                            }
+                        ],
+                        "edge_ai_camera_trigger": "CAPTURE_COMPRESSED_FEATURE_CODE"
+                    },
+                    "system_routing_action": {
+                        "next_component_api": "https://api.civictech.moda.gov.tw/v1/disaster/management/dispatch",
+                        "data_format_version": "v1.2.0-JSON-Schema",
+                        "broadcast_to_ncdr_cap": true
+                    }
                 },
-                "timestamp": 1748390400
+                "timestamp": 1780024258
             },
             4: {
                 "success": true,
@@ -295,36 +348,71 @@
             "analysis_id": "ANALS_MATAIA_20260527_0001",
             "timestamp": "2026-05-27T19:16:00Z",
             "target_disaster_event": "2025_Mataian_River_Barrier_Lake_Crisis_Simulation",
-            "ai_agent_status": {
-                "engine_mode": "Multi_Modal_Autonomous_Agent",
-                "ingested_sources": ["JSON1_Fire", "JSON2_Inclinometer", "JSON3_Human_NLP", "JSON4_EMIC_OpenData"],
-                "overall_confidence_score": 0.98
-            },
-            "disaster_assessment": {
-                "composite_risk_level": "RED_ALERT_CRITICAL",
-                "primary_hazard": "Barrier_Lake_Outflow_and_Landslide",
-                "spatiotemporal_focus": {
-                    "river_basin": "花蓮縣馬太鞍溪上游流域",
-                    "impact_radius_km": 5.0,
-                    "estimated_affected_population": 1250
-                },
-                "cross_verification_log": {
-                    "human_report_validated": true,
-                    "hardware_ground_truth_match": "MATCHED (Inclinometer Z-RMS anomalous & EMIC water level gauge critical)"
+
+            "//_備註 1": "以下為對接 NCDR / EMIC 國家標準的共通警報協定 (CAP-JSON) 封包",
+            "cap_standard_payload": {
+                "identifier": "Brocere_Blockcraft_MATAIA_20260527_0001",
+                "sender": "Brocere_AIoT_Agent_Mataian_01",
+                "sent": "2026-05-27T19:16:00+08:00",
+                "status": "Actual",
+                "msgType": "Alert",
+                "scope": "Public",
+                "info": {
+                    "category": "Met",
+                    "event": "堰塞湖溢流及土石流複合災害",
+                    "urgency": "Immediate",
+                    "severity": "Extreme",
+                    "certainty": "Observed",
+                    "eventCode": "土石流警戒/水位警戒",
+                    "headline": "花蓮縣馬太鞍溪上游堰塞湖發生嚴重溢流與土石流滑動告警",
+                    "description": "經博誠現地地質傾斜監測物聯網元件 (IOT5_landslide) 與現場人員衛星通報交叉驗證，確認花蓮馬太鞍溪上游堰塞湖已達潰堤臨界點，邊坡持續產生劇烈位移。",
+                    "instruction": "請下游萬榮鄉相關警戒區域居民與救災單位立即啟動緊急疏散撤離計畫。",
+                    "area": {
+                        "areaDesc": "花蓮縣萬榮鄉馬太鞍溪上游流域",
+                        "circle": "23.6342,121.3856,5000"
+                    }
                 }
             },
+
+            "//_備註 2": "以下為博誠模塊組件專屬之內部智慧路由、人工智慧軌跡與反向硬體航太控制碼",
+            "ai_agent_status": {
+                "engine_mode": "Multi_Modal_Autonomous_Agent",
+                "ingested_sources": [
+                    "JSON1_Fire",
+                    "JSON2_Inclinometer",
+                    "JSON3_Human_NLP",
+                    "JSON4_EMIC_OpenData"
+                ],
+                "overall_confidence_score": 0.98
+            },
             "autonomous_tool_execution_log": [
-                { "step": 1, "action": "QUERY_WEATHER_API", "status": "SUCCESS", "result": "Confirming rainfall exceeds 80mm/hr inside Mataian catchment." },
-                { "step": 2, "action": "ROUTE_DISPATCH_RECOMMENDATION", "status": "GENERATED", "suggested_resource": "花蓮縣消防局第三大隊特搜分隊" }
+                {
+                    "step": 1,
+                    "action": "QUERY_WEATHER_API",
+                    "status": "SUCCESS",
+                    "result": "Confirming rainfall exceeds 80mm/hr inside Mataian catchment."
+                },
+                {
+                    "step": 2,
+                    "action": "ROUTE_DISPATCH_RECOMMENDATION",
+                    "status": "GENERATED",
+                    "suggested_resource": "花蓮縣消防局第三大隊特搜分隊"
+                }
             ],
             "action_triggers": {
                 "broadcast_channels": [
-                    { "channel_type": "LINE_Official_Notification", "payload_message": "【緊急告警】馬太鞍溪堰塞湖邊坡監測魔塊偵測到持續滑動，結合現地通報確認已發生溢流與土石流！請立刻啟動下游居民撤離計畫！" }
+                    {
+                        "channel_type": "LINE_Official_Notification",
+                        "payload_message": "【緊急告警】馬太鞍溪堰塞湖邊坡監測魔塊偵測到持續滑動，結合現地通報確認已發生溢流與土石流！請立刻啟動下游居民撤離計畫！"
+                    }
                 ],
                 "blockcraft_ntn_command": {
                     "target_hardware_group": "Mataian_Upper_Stream_IoT_Network",
                     "instruction": "CHANGE_COMMUNICATION_MODE_TO_SURVIVAL",
-                    "payload": { "primary_link": "NTN_GEO_SATELLITE", "uplink_frequency_seconds": 60 }
+                    "payload": {
+                        "primary_link": "NTN_GEO_SATELLITE",
+                        "uplink_frequency_seconds": 60
+                    }
                 }
             }
         };
@@ -396,7 +484,7 @@
                 document.getElementById("statusAction2").classList.remove("hidden");
 
                 // 自動彈出反向太空通訊切換控制視窗，拉滿展示現場震撼感
-                setTimeout(() => { showSatelliteModal(); }, 800);
+                setTimeout(() => { showSatelliteModal(); }, 5000);
 
             }, 6500);
         }

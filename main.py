@@ -19,7 +19,7 @@ PORT = int(os.getenv("PORT", 8000))
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 from config.response_example import EXAMPLE_FIRE, EXAMPLE_EARTHQUAKE, EXAMPLE_NOTIFY_FIRE, EXAMPLE_REPORT, EXAMPLE_REPORT_INFO
 from config.field_labels import DETAIL_FIELD_LABELS
-LINE_EXAMPLE_TEXT_MESSAGE = {"text": "馬太鞍溪上游發生土石崩塌，旁邊有人受困！"}
+LINE_EXAMPLE_TEXT_MESSAGE = {"text": "我是馬太鞍溪上游巡檢員，剛剛大雨不停，發現堰塞湖水位暴漲已經開始溢流了！而且旁邊山壁發生土石流導致道路坍方，目前手機完全沒有行動通訊訊號，我是透過魔塊衛星發出這條 SOS 求救，請指揮中心立刻派人撤離下游居民！"}
 
 app = FastAPI(title="通報 API")
 app.add_middleware(
@@ -36,25 +36,44 @@ def parse_disaster_message(text: str) -> dict:
     """
     parsed = {
         "location": "花蓮縣馬太鞍溪地區 (經確認)",
-        "inferred_hazard": "GENERAL",
+        "primary_hazard": "General_Incident",
+        "secondary_hazard": None,
         "severity": "INFO",
-        "needs_rescue": False
+        "needs_rescue": False,
+        "extracted_keywords": [],
+        "impact_objects": [],
+        "urgent_requests": []
     }
 
     if "火" in text or "煙" in text or "燒" in text:
-        parsed["inferred_hazard"] = "FIRE"
+        parsed["primary_hazard"] = "Fire"
         parsed["severity"] = "CRITICAL"
-    elif "土石" in text or "崩塌" in text or "坍方" in text:
-        parsed["inferred_hazard"] = "LANDSLIDE"
-        parsed["severity"] = "CRITICAL"
-    elif "水" in text or "暴漲" in text or "溢流" in text:
-        parsed["inferred_hazard"] = "FLOOD"
+    elif "堰塞湖" in text or "水位暴漲" in text or ("水" in text and ("暴漲" in text or "溢流" in text)):
+        parsed["primary_hazard"] = "Barrier_Lake_Overflow"
         parsed["severity"] = "WARNING"
-        
-    if "救命" in text or "受困" in text or "有人" in text:
+        if "土石" in text or "崩塌" in text or "坍方" in text:
+            parsed["secondary_hazard"] = "Debris_Flow"
+            parsed["severity"] = "CRITICAL"
+    elif "土石" in text or "崩塌" in text or "坍方" in text:
+        parsed["primary_hazard"] = "Debris_Flow"
+        parsed["severity"] = "CRITICAL"
+
+    if "救命" in text or "受困" in text or "有人" in text or "SOS" in text or "求救" in text:
         parsed["needs_rescue"] = True
         parsed["severity"] = "CRITICAL"
-        
+
+    kw_candidates = ["水位暴漲", "堰塞湖溢流", "堰塞湖", "發生土石流", "道路坍方",
+                     "沒有行動通訊訊號", "SOS", "立刻派人", "救命", "受困", "溢流", "暴漲", "崩塌", "坍方"]
+    parsed["extracted_keywords"] = [kw for kw in kw_candidates if kw in text]
+
+    impact_candidates = ["下游居民", "居民", "聯外道路", "道路", "橋梁", "房屋"]
+    parsed["impact_objects"] = [obj for obj in impact_candidates if obj in text]
+
+    if "撤離" in text:
+        parsed["urgent_requests"].append("人員撤離")
+    if "搜救" in text or "救人" in text or "派人" in text or "求救" in text:
+        parsed["urgent_requests"].append("搜救派遣")
+
     return parsed
 
 def send_line_reply(reply_token: str, reply_text: str):
@@ -103,8 +122,8 @@ async def notify(payload: dict = Body(example=LINE_EXAMPLE_TEXT_MESSAGE)):
 
         analysis_result = parse_disaster_message(raw_message)
 
-        hazard_mapping = {"FIRE": "火災", "LANDSLIDE": "土石流/崩塌", "FLOOD": "水災/溪水暴漲", "GENERAL": "一般災情"}
-        hazard_chinese = hazard_mapping.get(analysis_result["inferred_hazard"], "一般災情")
+        hazard_mapping = {"Fire": "火災", "Debris_Flow": "土石流/崩塌", "Barrier_Lake_Overflow": "堰塞湖溢流", "General_Incident": "一般災情"}
+        hazard_chinese = hazard_mapping.get(analysis_result["primary_hazard"], "一般災情")
         location_chinese = "馬太鞍" if "馬太鞍" in raw_message else "馬太鞍溪地區"
         urgency_mapping = {"CRITICAL": "緊急", "WARNING": "警戒", "INFO": "一般"}
         urgency_chinese = urgency_mapping.get(analysis_result["severity"], "一般")
@@ -115,21 +134,59 @@ async def notify(payload: dict = Body(example=LINE_EXAMPLE_TEXT_MESSAGE)):
         if reply_token:
             send_line_reply(reply_token, formatted_reply)
         
-        standard_json_output = {
-            "station_id": payload.get("station_id", "LINE_CITIZEN_REPORT_01"),
-            "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "raw_content": raw_message,
-            "structured_data": {
-                "location": analysis_result["location"],
-                "hazard_type": analysis_result["inferred_hazard"],
-                "danger_level": analysis_result["severity"]
-            },
-            "human_readable_reply": formatted_reply
-        }
+        timestamp_str = datetime.utcnow().strftime("%Y%m%dT%H%M%S")
+        confidence = 0.96 if analysis_result["severity"] == "CRITICAL" else 0.75
 
-        # timestamp_str = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-        # with open(f"disaster_report_{timestamp_str}.json", "w", encoding="utf-8") as f:
-        #     json.dump(standard_json_output, f, ensure_ascii=False, indent=2)
+        standard_json_output = {
+            "report_id": f"REPORT_{timestamp_str}",
+            "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "source_channel": payload.get("source_channel", "LINE_Webhook"),
+            "network_telemetry": payload.get("network_telemetry", {
+                "carrier": "Mobile_Network",
+                "mode": "NB_IoT",
+                "rssi": -118,
+                "latency_ms": 650
+            }),
+            "raw_input_text": raw_message,
+            "ai_nlp_analysis": {
+                "primary_disaster_type": analysis_result["primary_hazard"],
+                "secondary_disaster_type": analysis_result["secondary_hazard"],
+                "threat_level": analysis_result["severity"],
+                "confidence_score": confidence,
+                "extracted_keywords": analysis_result["extracted_keywords"]
+            },
+            "extracted_entities": {
+                "location": {
+                    "reported_place": analysis_result["location"],
+            "latitude": 23.6342,
+            "longitude": 121.3856,
+            "coordinate_accuracy": "GPS_High_Precision"
+                },
+                "impact_objects": analysis_result["impact_objects"],
+                "urgent_requests": analysis_result["urgent_requests"]
+            },
+            "blockcraft_iot_fusion": {
+                "trigger_hardware_cross_check": True,
+                "target_sensor_modules": [
+                    {
+                        "sensor_type": "Radar_Water_Level_Gauge",
+                        "action": "QUERY_GROUND_TRUTH",
+                        "expected_field": "water_level_meter"
+                    },
+                    {
+                        "sensor_type": "3D_Inclinometer_Vibration",
+                        "action": "QUERY_GROUND_TRUTH",
+                        "expected_field": "slope_displacement_deg"
+                    }
+                ],
+                "edge_ai_camera_trigger": "CAPTURE_COMPRESSED_FEATURE_CODE"
+            },
+            "system_routing_action": {
+                "next_component_api": "https://api.civictech.moda.gov.tw/v1/disaster/management/dispatch",
+                "data_format_version": "v1.2.0-JSON-Schema",
+                "broadcast_to_ncdr_cap": True
+            }
+        }
 
         return success_response(message="災情通報接收並處理成功", data=standard_json_output)
 

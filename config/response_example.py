@@ -19,13 +19,73 @@ EXAMPLE_EARTHQUAKE = _ex({
 })
 
 EXAMPLE_NOTIFY_FIRE = _ex({
-    "success": True,
-    "message": "災情通報接收並處理成功",
-    "data": {"station_id": "LINE_CITIZEN_REPORT_01", "timestamp": "2026-05-28T06:00:00Z",
-             "raw_content": "我是馬太鞍溪上游巡檢員，發現堰塞湖水位暴漲，土石流導致道路坍方，請立刻撤離！",
-             "structured_data": {"location": "花蓮縣馬太鞍溪地區 (經確認)", "hazard_type": "LANDSLIDE", "danger_level": "CRITICAL"},
-             "human_readable_reply": "已收到您的回報！\n通報時間：2026-05-28 14:00\n案件類型：土石流/崩塌\n地點：馬太鞍溪地區\n警急性：緊急"},
-    "timestamp": 1748390400
+	"success": True,
+	"message": "災情通報接收並處理成功",
+	"data": {
+		"report_id": "MATAIA_20260527_0012",
+    "timestamp": "2026-05-27T19:15:30Z",
+    "source_channel": "Satellite_SMS_Bridge",
+    "network_telemetry": {
+        "carrier": "Brocere_NTN_Network",
+        "mode": "NTN_GEO_SATELLITE",
+        "rssi": -118,
+        "latency_ms": 650
+    },
+    "raw_input_text": "我是馬太鞍溪上游巡檢員，剛剛大雨不停，發現堰塞湖水位暴漲已經開始溢流了！而且旁邊山壁發生土石流導致道路坍方，目前手機完全沒有行動通訊訊號，我是透過魔塊衛星發出這條 SOS 求救，請指揮中心立刻派人撤離下游居民！",
+    "ai_nlp_analysis": {
+        "primary_disaster_type": "Barrier_Lake_Overflow",
+        "secondary_disaster_type": "Debris_Flow",
+        "threat_level": "CRITICAL",
+        "confidence_score": 0.96,
+        "extracted_keywords": [
+            "水位暴漲",
+            "堰塞湖溢流",
+            "發生土石流",
+            "道路坍方",
+            "沒有行動通訊訊號",
+            "SOS",
+            "立刻派人"
+        ]
+    },
+    "extracted_entities": {
+        "location": {
+            "reported_place": "花蓮縣馬太鞍溪上游堰塞湖",
+            "latitude": 23.6342,
+            "longitude": 121.3856,
+            "coordinate_accuracy": "GPS_High_Precision"
+        },
+        "impact_objects": [
+            "下游居民",
+            "聯外道路"
+        ],
+        "urgent_requests": [
+            "人員撤離",
+            "搜救派遣"
+        ]
+    },
+    "blockcraft_iot_fusion": {
+        "trigger_hardware_cross_check": True,
+        "target_sensor_modules": [
+            {
+                "sensor_type": "Radar_Water_Level_Gauge",
+                "action": "QUERY_GROUND_TRUTH",
+                "expected_field": "water_level_meter"
+            },
+            {
+                "sensor_type": "3D_Inclinometer_Vibration",
+                "action": "QUERY_GROUND_TRUTH",
+                "expected_field": "slope_displacement_deg"
+            }
+        ],
+        "edge_ai_camera_trigger": "CAPTURE_COMPRESSED_FEATURE_CODE"
+    },
+    "system_routing_action": {
+        "next_component_api": "https://api.civictech.moda.gov.tw/v1/disaster/management/dispatch",
+        "data_format_version": "v1.2.0-JSON-Schema",
+        "broadcast_to_ncdr_cap": True
+    }
+	},
+	"timestamp": 1780024258
 })
 
 EXAMPLE_REPORT = _ex({
