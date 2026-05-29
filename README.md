@@ -220,12 +220,7 @@ Follow these steps to build and run the application inside an isolated Docker co
 Build the container image and tag it as fastapi-app:
 
 ```bash
-docker run -d --name fastapi_container -p 8000:8000 fastapi-app
-```
-
-Run together with env file 
-```bash
-docker run -d --name fastapi_container -p 8000:8000 --env-file <FILE_NAME> fastapi-app
+docker build -t fastapi-app .
 ```
 
 #### 2. Run the Docker Container
@@ -233,7 +228,12 @@ Launch the container in detached mode (-d), exposing port 8000 and injecting you
 
 NOTE: port can be changed inside the 'run' command. E.g. 3000:3000
 ```bash
-docker run -d --name fastapi_container -p 8000:8000 --env-file .env fastapi-app
+docker run -d --name fastapi_container -p 8000:8000 fastapi-app
+```
+
+Run together with env file 
+```bash
+docker run -d --name fastapi_container -p 8000:8000 --env-file <FILE_NAME> fastapi-app
 ```
 
 3. Access the App Inside Docker
