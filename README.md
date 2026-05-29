@@ -5,6 +5,7 @@
 ### 實作型態：應用程式介面服務型 / 模組上下文協定伺服器元件
 
 ---
+
 💡 **大會審查特別說明：**
 本作品由「博誠魔塊：韌性積木災防隊」開發，完全符合大會規範。免安裝任何後端伺服器環境，全功能以開源純前端模擬應用程式介面與資料流程呈現。評審與開源社群只需雙擊網頁檔案或點擊下方展示連結，即可一鍵驗證四大模組通報（實作一）與人工智慧代理人多步驟推理分析（實作二）的完整輸入、處理、輸出規格。
 
@@ -37,6 +38,7 @@
 
 
 ---
+
 ## 專案說明
 
 ### 一、 問題描述
@@ -113,7 +115,7 @@
 
 ---
 
-## 七、 使用情境假設
+### 七、 使用情境假設
 
 以花蓮馬太鞍溪堰塞湖潰堤前夕為演練場景：
 * **時間 0 分鐘：** 颱風引發深山大崩塌堵塞河道。此時，暴雨導致萬榮鄉地面行動基地台電力中斷，傳統防災網絡瞬間全盲。
@@ -207,14 +209,14 @@ python3 main.py
 ```
 
 #### 5. Access the App
-Live API: Open http://localhost:8000 in your browser.
+- Live API: Open http://localhost:8000 in your browser.
 
-Interactive Swagger UI: Open http://localhost:8000/docs to test the endpoints.
+- Interactive Swagger UI: Open http://localhost:8000/docs to test the endpoints.
 
 ### Option 2: Production Setup (Using Docker Container)
 Follow these steps to build and run the application inside an isolated Docker container.
 
-## 1. Build the Docker Image
+#### 1. Build the Docker Image
 Build the container image and tag it as fastapi-app:
 
 ```bash
@@ -232,16 +234,23 @@ docker run -d --name fastapi_container -p 8000:8000 --env-file .env fastapi-app
 3. Access the App Inside Docker
 Live API: Open http://localhost:8000
 
-Interactive Swagger UI: Open http://localhost:8000/docs
+- Interactive Swagger UI: Open http://localhost:8000/docs
 
-Useful Docker Commands
-View running container logs: docker logs fastapi_container
+- Useful Docker Commands
 
-Stop the container: docker stop fastapi_container
+   ```bash
+    #View running container logs: 
+    docker logs fastapi_container
 
-Start the container again: docker start fastapi_container
+    #Stop the container: 
+    docker stop fastapi_container
 
-Remove the container: docker rm -f fastapi_container
+    #Start the container again: 
+    docker start fastapi_container
+
+    #Remove the container: 
+    docker rm -f fastapi_container
+    ```
 
 ---
 
