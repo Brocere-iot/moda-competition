@@ -1,0 +1,37 @@
+name: Deploy FastAPI to EC2
+
+on:
+  push:
+    branches:
+      - main  # Triggers the workflow whenever you push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Executing remote ssh commands to deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_HOST_DNS }}
+          username: ${{ secrets.DEV_USERNAME }}
+          key: ${{ secrets.DEV_SSH_KEY }}
+          script: |
+            # Navigate to your project directory on EC2
+            cd /moda-competition
+            
+            # Pull the latest changes from GitHub
+            git pull origin main
+            
+            # Stop and remove the existing container if it is running
+            docker stop fastapi_container || true
+            docker rm fastapi_container || true
+            
+            # 1. Build the Docker Image
+            docker build -t fastapi-app .
+            
+            # 2. Run the Docker Container
+            docker run -d --name fastapi_container -p 8000:8000 fastapi-app
