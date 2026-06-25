@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.DEV_SSH_KEY }}
           script: |
             # Navigate to your project directory on EC2
-            cd /moda-competition
+            cd ~/moda-competition
             
             # Pull the latest changes from GitHub
             git pull origin main
