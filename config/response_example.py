@@ -88,6 +88,67 @@ EXAMPLE_NOTIFY_FIRE = _ex({
 	"timestamp": 1780024258
 })
 
+EXAMPLE_ANALYZE = _ex({
+    "success": True,
+    "message": "災情分析完成",
+    "data": {
+        "analysis_id": "ANALS_20260527T191600",
+        "timestamp": "2026-05-27T19:16:00Z",
+        "cap_standard_payload": {
+            "identifier": "Brocere_Blockcraft_20260527T191600",
+            "sender": "Brocere_AIoT_Agent",
+            "sent": "2026-05-27T19:16:00+08:00",
+            "status": "Actual",
+            "msgType": "Alert",
+            "scope": "Public",
+            "info": {
+                "category": "Met",
+                "event": "堰塞湖溢流",
+                "urgency": "Immediate",
+                "severity": "Extreme",
+                "certainty": "Observed",
+                "headline": "馬太鞍溪堰塞湖水位暴漲且山壁落石，強降雨持續加劇風險",
+                "instruction": "立即疏散下游居民並封鎖現場"
+            }
+        },
+        "ai_agent_status": {
+            "engine_mode": "Multi_Modal_Autonomous_Agent",
+            "ingested_sources": ["Radar_Water_Level_Gauge", "3D_Inclinometer_Vibration", "Human_Report_NLP", "External_OpenData"],
+            "overall_confidence_score": 0.92
+        },
+        "autonomous_tool_execution_log": [
+            {"step": 1, "action": "SPATIAL_TEMPORAL_ALIGNMENT", "status": "SUCCESS"},
+            {"step": 2, "action": "CROSS_MODAL_VALIDATION", "status": "SUCCESS"},
+            {"step": 3, "action": "QUERY_EXTERNAL_API", "status": "SUCCESS"},
+            {"step": 4, "action": "GENERATE_ROUTING_COMMAND", "status": "SUCCESS"}
+        ],
+        "action_triggers": {
+            "broadcast_channels": [
+                {
+                    "channel_type": "LINE_Official_Notification",
+                    "has_disaster": True,
+                    "disaster_type": "堰塞湖溢流",
+                    "threat_level": "CRITICAL",
+                    "threat_score": 90,
+                    "summary": "馬太鞍溪堰塞湖水位暴漲，水位超標且有落石，豪雨持續增加風險",
+                    "recommended_action": "立即疏散下游居民並封鎖現場",
+                    "payload_message": "[防災警報] CRITICAL\n時間：2026-06-25 15:05\n災害類型：堰塞湖溢流\n威脅分數：90/100\n摘要：馬太鞍溪堰塞湖水位暴漲，水位超標且有落石，豪雨持續增加風險\n建議行動：立即疏散下游居民並封鎖現場",
+                    "line_notified": True
+                }
+            ],
+            "blockcraft_ntn_command": {
+                "target_hardware_group": "IoT_Network",
+                "instruction": "CHANGE_COMMUNICATION_MODE_TO_SURVIVAL",
+                "payload": {
+                    "primary_link": "NTN_GEO_SATELLITE",
+                    "uplink_frequency_seconds": 60
+                }
+            }
+        }
+    },
+    "timestamp": 1780024258
+})
+
 EXAMPLE_REPORT = _ex({
     "success": True, "message": "民生物聯網災情通報資料擷取成功", "timestamp": 1748390400,
     "data": [{"city_name": "花蓮縣", "amber_rivers": "3", "red_rivers": "1", "amber_collapse": "2", "red_collapse": "1",
