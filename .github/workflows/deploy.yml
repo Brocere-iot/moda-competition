@@ -34,4 +34,4 @@ jobs:
             docker build -t fastapi-app .
             
             # 2. Run the Docker Container
-            docker run -d --name fastapi_container -p 8000:8000 fastapi-app
+            docker run -d --name fastapi_container -p 8000:8000 --env-file .env fastapi-app
