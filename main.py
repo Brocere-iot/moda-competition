@@ -4,6 +4,7 @@ from typing import List
 
 from starlette.responses import FileResponse
 from utils.response_helper import success_response, error_response
+from config.notify import broadcast_line_bot_message, send_line_reply
 from database.mock_db import mock_incline_data, mock_fire_data
 import httpx
 import uvicorn
@@ -83,25 +84,6 @@ def parse_disaster_message(text: str) -> dict:
 
     return parsed
 
-def send_line_reply(reply_token: str, reply_text: str):
-    LINE_API_URL = "https://api.line.me/v2/bot/message/reply"
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {LINE_CHANNEL_ACCESS_TOKEN}"
-    }
-    payload = {
-        "replyToken": reply_token,
-        "messages": [
-            {
-                "type": "text",
-                "text": reply_text
-            }
-        ]
-    }
-    # 發送 POST 請求給 LINE 
-    response = requests.post(LINE_API_URL, headers=headers, json=payload)
-    print(f"--- LINE status code: {response.status_code} ---")
-
 @app.post("/notify", responses={200: EXAMPLE_NOTIFY_FIRE})
 async def notify(payload: dict = Body(example=LINE_EXAMPLE_TEXT_MESSAGE)):
     events = payload.get("events", [])
@@ -143,6 +125,8 @@ async def notify(payload: dict = Body(example=LINE_EXAMPLE_TEXT_MESSAGE)):
         
         timestamp_str = datetime.utcnow().strftime("%Y%m%dT%H%M%S")
         confidence = 0.96 if analysis_result["severity"] == "CRITICAL" else 0.75
+
+        
 
         standard_json_output = {
             "report_id": f"REPORT_{timestamp_str}",
