@@ -43,6 +43,10 @@ app.add_middleware(
 async def root():
     return FileResponse("call.html")
 
+@app.get("/analysis", include_in_schema=False)
+async def root():
+    return FileResponse("analysis.html")
+
 NOTIFY_SYSTEM_PROMPT = """你是一個防災通報文字解析系統。
 請分析以下來自現場人員的災情通報文字，擷取關鍵防災欄位。
 

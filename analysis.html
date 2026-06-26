@@ -224,8 +224,10 @@
                 "success": true,
                 "message": "Fire data for station 1 retrieved successfully.",
                 "timestamp": 1748390400,
+                // Tab 1 maps to iot_sensors[0]
                 "data": {
                     "station_id": 1,
+                    "sensor_type": "IOT5_Fire",
                     "timestamp": 1748390400,
                     "tw_time": "2026-05-28 14:00:00",
                     "rsrq_index": -82,
@@ -240,8 +242,10 @@
                 "success": true,
                 "message": "Earthquake data for station 23 retrieved successfully.",
                 "timestamp": 1748390400,
+                // Tab 2 maps to iot_sensors[1]
                 "data": {
                     "station_id": 23,
+                    "sensor_type": "IOT5_landslide",
                     "timestamp": 1779951869,
                     "tw_time": "2026-05-28 15:04:29",
                     "rsrq_index": -70,
@@ -259,92 +263,53 @@
             3: {
                 "success": true,
                 "message": "災情通報接收並處理成功",
+                "timestamp": 1780024258,
+                // Tab 3 maps to human_reports[0] (Notice key changed from raw_input_text to text)
                 "data": {
-                    "report_id": "MATAIA_20260527_0012",
+                    "source": "Satellite_SMS_Bridge",
+                    "text": "我是馬太鞍溪上游巡檢員，剛剛大雨不停，發現堰塞湖水位暴漲已經開始溢流了！而且旁邊山壁發生土石流導致道路坍方，目前手機完全沒有行動通訊訊號，我是透過魔塊衛星發出這條 SOS 求救，請指揮中心立刻派人撤離下游居民！",
                     "timestamp": "2026-05-27T19:15:30Z",
-                    "source_channel": "Satellite_SMS_Bridge",
                     "network_telemetry": {
                         "carrier": "Brocere_NTN_Network",
                         "mode": "NTN_GEO_SATELLITE",
                         "rssi": -118,
                         "latency_ms": 650
-                    },
-                    "raw_input_text": "我是馬太鞍溪上游巡檢員，剛剛大雨不停，發現堰塞湖水位暴漲已經開始溢流了！而且旁邊山壁發生土石流導致道路坍方，目前手機完全沒有行動通訊訊號，我是透過魔塊衛星發出這條 SOS 求救，請指揮中心立刻派人撤離下游居民！",
-                    "ai_nlp_analysis": {
-                        "primary_disaster_type": "Barrier_Lake_Overflow",
-                        "secondary_disaster_type": "Debris_Flow",
-                        "threat_level": "CRITICAL",
-                        "confidence_score": 0.96,
-                        "extracted_keywords": [
-                            "水位暴漲",
-                            "堰塞湖溢流",
-                            "發生土石流",
-                            "道路坍方",
-                            "沒有行動通訊訊號",
-                            "SOS",
-                            "立刻派人"
-                        ]
-                    },
-                    "extracted_entities": {
-                        "location": {
-                            "reported_place": "花蓮縣馬太鞍溪上游堰塞湖",
-                            "latitude": 23.6342,
-                            "longitude": 121.3856,
-                            "coordinate_accuracy": "GPS_High_Precision"
-                        },
-                        "impact_objects": [
-                            "下游居民",
-                            "聯外道路"
-                        ],
-                        "urgent_requests": [
-                            "人員撤離",
-                            "搜救派遣"
-                        ]
-                    },
-                    "blockcraft_iot_fusion": {
-                        "trigger_hardware_cross_check": true,
-                        "target_sensor_modules": [
-                            {
-                                "sensor_type": "Radar_Water_Level_Gauge",
-                                "action": "QUERY_GROUND_TRUTH",
-                                "expected_field": "water_level_meter"
-                            },
-                            {
-                                "sensor_type": "3D_Inclinometer_Vibration",
-                                "action": "QUERY_GROUND_TRUTH",
-                                "expected_field": "slope_displacement_deg"
-                            }
-                        ],
-                        "edge_ai_camera_trigger": "CAPTURE_COMPRESSED_FEATURE_CODE"
-                    },
-                    "system_routing_action": {
-                        "next_component_api": "https://api.civictech.moda.gov.tw/v1/disaster/management/dispatch",
-                        "data_format_version": "v1.2.0-JSON-Schema",
-                        "broadcast_to_ncdr_cap": true
                     }
-                },
-                "timestamp": 1780024258
+                }
             },
             4: {
                 "success": true,
                 "message": "民生物聯網災情通報資料擷取成功",
                 "timestamp": 1748390400,
-                "data": [{
+                // Tab 4 maps to external_data[0]
+                "data": {
+                    "source": "EMIC_OpenData",
                     "city_name": "花蓮縣",
-                    "amber_rivers": "3", "amber_rivers_twp": "2", "amber_rivers_vil": "4",
-                    "red_rivers": "1", "red_rivers_twp": "1", "red_rivers_vil": "2",
-                    "amber_collapse": "2", "amber_collapse_twp": "1", "amber_collapse_vil": "2",
-                    "red_collapse": "1", "red_collapse_twp": "1", "red_collapse_vil": "1",
-                    "total_amber_twp": "3", "total_amber_vil": "6",
-                    "total_red_twp": "2", "total_red_vil": "3",
-                    "total_rivers": "4", "total_collapse": "3",
-                    "status": 1, "no_data_mark": null,
+                    "amber_rivers": "3",
+                    "amber_rivers_twp": "2",
+                    "amber_rivers_vil": "4",
+                    "red_rivers": "1",
+                    "red_rivers_twp": "1",
+                    "red_rivers_vil": "2",
+                    "amber_collapse": "2",
+                    "amber_collapse_twp": "1",
+                    "amber_collapse_vil": "2",
+                    "red_collapse": "1",
+                    "red_collapse_twp": "1",
+                    "red_collapse_vil": "1",
+                    "total_amber_twp": "3",
+                    "total_amber_vil": "6",
+                    "total_red_twp": "2",
+                    "total_red_vil": "3",
+                    "total_rivers": "4",
+                    "total_collapse": "3",
+                    "status": 1,
                     "rpt_time": "2026-05-28T06:31:04.0000000+08:00"
-                }]
+                }
             }
         };
 
-        const analysisOutputJson = {
+        let analysisOutputJson = {
             "analysis_id": "ANALS_MATAIA_20260527_0001",
             "timestamp": "2026-05-27T19:16:00Z",
             "target_disaster_event": "2025_Mataian_River_Barrier_Lake_Crisis_Simulation",
@@ -418,6 +383,7 @@
         };
 
         function switchInputTab(tabId) {
+            currentTab = tabId;
             for (let i = 1; i <= 4; i++) {
                 const btn = document.getElementById(`btnIn${i}`);
                 if (i === tabId) {
@@ -429,10 +395,65 @@
             document.getElementById("inputJsonDisplay").innerText = JSON.stringify(inputPool[tabId], null, 4);
         }
 
+        // Expected fields: 
+        // 1. iot_sensors,
+        // 2. human_reports,
+        // 3. external_data 
+
+    
         function startAnalysisWorkflow() {
+
             document.getElementById("btnStartAnalysis").disabled = true;
             document.getElementById("btnStartAnalysis").innerText = "⏳ 代理人全自主推理中...";
             document.getElementById("brainPulse").classList.remove("hidden");
+
+            const currentData = inputPool[currentTab];
+            const requestBody = {
+                iot_sensors: [
+                    inputPool[1].data, // Grabs the fire sensor object
+                    inputPool[2].data  // Grabs the landslide sensor object
+                ],
+                human_reports: [
+                    inputPool[3].data  // Grabs the human text report object
+                ],
+                external_data: [
+                    inputPool[4].data  // Grabs the government EMIC open data object
+                ]
+            };
+
+            let apiFetchPromise = fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            })
+            .then(async response => {
+                if (!response.ok) {
+                    // Read the actual text/JSON error payload sent back by FastAPI
+                    const errorDetail = await response.text();
+                    console.error("🔴 FastAPI Error Payload From Server:", errorDetail);
+                    
+                    // Pop up an alert on your screen so you can see it instantly during testing
+                    alert(`Server Error 500: ${errorDetail}`);
+                    
+                    throw new Error(`HTTP error! status: ${response.status}, detail: ${errorDetail}`);
+                }
+                return response.json();
+            })
+            .then(result => {
+                console.log("AI Analysis Result:", result.data);
+                // If your custom API envelope wraps data inside "data", extract it
+                if (result.data) {
+                    analysisOutputJson = result.data;
+                } else {
+                    analysisOutputJson = result;
+                }
+            })
+            .catch(error => {
+                console.warn("FastAPI offline or error. Using booth display fallback mock data:", error);
+                // Fallback placeholder is preserved so your competition booth display never breaks!
+            });
 
             // 重置 UI 狀態
             for (let i = 1; i <= 4; i++) {
