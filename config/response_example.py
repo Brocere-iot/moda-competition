@@ -151,7 +151,7 @@ EXAMPLE_ANALYZE = _ex({
 
 EXAMPLE_REPORT = _ex({
     "success": True, "message": "民生物聯網災情通報資料擷取成功", "timestamp": 1748390400,
-    "data": [{"city_name": "花蓮縣", "amber_rivers": "3", "red_rivers": "1", "amber_collapse": "2", "red_collapse": "1",
+    "data": [{"city_name": "花蓮縣","source":"EMIC_OpenData", "amber_rivers": "3", "red_rivers": "1", "amber_collapse": "2", "red_collapse": "1",
               "total_amber_twp": "3", "total_amber_vil": "6", "total_red_twp": "2", "total_red_vil": "3",
               "total_rivers": "4", "total_collapse": "3", "status": 1, "no_data_mark": None,
               "rpt_time": "2026-05-28T06:31:04.0000000+08:00"}]
