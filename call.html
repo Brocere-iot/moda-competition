@@ -238,9 +238,15 @@
                     </div>
                 </div>
 
-                <div class="mt-4 z-10">
+                <div class="mt-4 z-10 w-full px-2 text-center">
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 text-left">
+                        ✏️ 現場自訂通報情資內容 (Live Input)
+                    </label>
+                    <input id="customTextInput" type="text" oninput="handleLiveTextEdit()" placeholder="請輸入欲測試之文本情資..." 
+                        class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-blue-400 focus:outline-none focus:border-blue-500 transition font-mono mb-3 shadow-inner">
+                    
                     <button id="executeBtn" onclick="executeQuery()"
-                        class="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold py-2 px-4 rounded-xl shadow-lg transition duration-200 animate-bounce">
+                        class="w-full bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-lg transition duration-200">
                         ⚡ 點擊調用模組一網關
                     </button>
                 </div>
@@ -269,8 +275,7 @@
                             id="httpMethod">GET</span>
                     </div>
                     <div id="inputContent"
-                        class="code-font text-xs p-3 bg-gray-950 rounded-lg text-blue-300 border border-gray-800 break-all select-all">
-                        https://5urqyc2ccc.execute-api.ap-northeast-1.amazonaws.com/api/fire-data?iot-name=04702154615&end-date=1759827597&start-date=1759826397
+                        class="code-font text-xs p-3 bg-gray-950 rounded-lg text-blue-300 border border-gray-800 break-all select-all whitespace-pre-wrap">
                     </div>
                     <div class="mt-4 text-xs text-gray-400 leading-relaxed">
                         <span class="font-bold text-white block mb-1">💡 元件處理行為說明：</span>
@@ -307,12 +312,15 @@
     </footer>
 
     <script>
+        // 修正點：補齊 baseInput 與對應模組的 defaultText
         const mockData = {
             1: {
                 method: "GET",
-                input: "http://localhost:8000/data/fire/1",
+                baseInput: "https://5urqyc2ccc.execute-api.ap-northeast-1.amazonaws.com/api/fire-data?iot-name=04702154615&end-date=1759827597&start-date=1759826397",
+                input: "",
                 desc: "當博誠邊緣端火災監測魔塊 (IOT5_Fire) 聯網時，系統主動採集包含紅外熱顯像、二氧化碳、周圍溫度等微觀真值指標，並透過此結構化 API 向中央網關回傳數據。",
                 status: "✓ 解析火災感測器數據...\n✓ 壓縮傳輸特徵碼...",
+                defaultText: "IOT5_Fire 邊緣端監測：周圍溫度與二氧化碳指標均在常態安全容許範圍內。",
                 json: {
                     "success": true,
                     "message": "Fire data for station 1 retrieved successfully.",
@@ -326,15 +334,18 @@
                         "temp": 87.3,
                         "humi": 38.1,
                         "co2": -3108,
-                        "url": "https://d65hb6cahdqvu.cloudfront.net/04702154615/1779353739.png"
+                        "url": "https://d65hb6cahdqvu.cloudfront.net/04702154615/1779353739.png",
+                        "raw_input_text": ""
                     }
                 }
             },
             2: {
                 method: "GET",
-                input: "http://localhost:8000/data/earthquake/1",
+                baseInput: "http://localhost:8000/data/earthquake/1?station_id=23",
+                input: "",
                 desc: "部署在偏遠邊坡土石流高風險區的魔塊 (IOT5_landslide)，偵測到結構體或坡地異常傾斜移位與高頻振動。API 將回傳經邊緣端快速傅立葉轉換 (FFT) 後的三軸圖資與 P/S 波能量指標。",
                 status: "✓ 地震/傾斜閥值判定成功\n✓ 執行高頻 FFT 圖資轉換...",
+                defaultText: "IOT5_landslide 地滑監測：現地三軸加速度與傾斜角度未達預警通報門檻。",
                 json: {
                     "success": true,
                     "message": "Earthquake data for station 23 retrieved successfully.",
@@ -352,15 +363,18 @@
                         "y_rms": 197,
                         "z_rms": 5,
                         "P_wave": 0,
-                        "S_wave": 0
+                        "S_wave": 0,
+                        "raw_input_text": ""
                     }
                 }
             },
             3: {
                 method: "POST",
-                input: "http://localhost:8000/notify\n\nRequest Body:\n{\n    \"text\": \"我是馬太鞍溪上游巡檢員，剛剛大雨不停，發現堰塞湖水位暴漲已經開始溢流了！而且旁邊山壁發生土石流導致道路坍方，目前手機完全沒有行動通訊訊號，我是透過魔塊衛星發出這條 SOS 求救，請指揮中心立刻派人撤離下游居民！\"\n}",
+                baseInput: "http://localhost:8000/notify",
+                input: "",
                 desc: "極端災變導致馬太鞍溪現地地面行動基地台癱瘓時，第一線人員發送白話文字通報。博誠 API 元件內嵌關鍵字語意解析，能快速識別防汛、土石流等公共安全關鍵字，轉譯為結構化標準 JSON 格式以利系統整合。",
                 status: "✓ 開啟語意分析中樞\n✓ 自主分析多步驟決策中...",
+                defaultText: "我是馬太鞍溪上游巡檢員，剛剛大雨不停，發現堰塞湖水位暴漲已經開始溢流了！而且旁邊山壁發生土石流導致道路坍方，目前手機完全沒有行動通訊訊號，我是透過魔塊衛星發出這條 SOS 求救，請指揮中心立刻派人撤離下游居民！",
                 json: {
                     "success": true,
                     "message": "災情通報接收並處理成功",
@@ -374,51 +388,24 @@
                             "rssi": -118,
                             "latency_ms": 650
                         },
-                        "raw_input_text": "我是馬太鞍溪上游巡檢員，剛剛大雨不停，發現堰塞湖水位暴漲已經開始溢流了！而且旁邊山壁發生土石流導致道路坍方，目前手機完全沒有行動通訊訊號，我是透過魔塊衛星發出這條 SOS 求救，請指揮中心立刻派人撤離下游居民！",
+                        "raw_input_text": "",
                         "ai_nlp_analysis": {
                             "primary_disaster_type": "Barrier_Lake_Overflow",
                             "secondary_disaster_type": "Debris_Flow",
                             "threat_level": "CRITICAL",
                             "confidence_score": 0.96,
-                            "extracted_keywords": [
-                                "水位暴漲",
-                                "堰塞湖溢流",
-                                "發生土石流",
-                                "道路坍方",
-                                "沒有行動通訊訊號",
-                                "SOS",
-                                "立刻派人"
-                            ]
+                            "extracted_keywords": ["水位暴漲", "堰塞湖溢流", "發生土石流", "道路坍方", "沒有行動通訊訊號", "SOS", "立刻派人"]
                         },
                         "extracted_entities": {
-                            "location": {
-                                "reported_place": "花蓮縣馬太鞍溪上游堰塞湖",
-                                "latitude": 23.6342,
-                                "longitude": 121.3856,
-                                "coordinate_accuracy": "GPS_High_Precision"
-                            },
-                            "impact_objects": [
-                                "下游居民",
-                                "聯外道路"
-                            ],
-                            "urgent_requests": [
-                                "人員撤離",
-                                "搜救派遣"
-                            ]
+                            "location": { "reported_place": "花蓮縣馬太鞍溪上游堰塞湖", "latitude": 23.6342, "longitude": 121.3856, "coordinate_accuracy": "GPS_High_Precision" },
+                            "impact_objects": ["下游居民", "聯外道路"],
+                            "urgent_requests": ["人員撤離", "搜救派遣"]
                         },
                         "blockcraft_iot_fusion": {
                             "trigger_hardware_cross_check": true,
                             "target_sensor_modules": [
-                                {
-                                    "sensor_type": "Radar_Water_Level_Gauge",
-                                    "action": "QUERY_GROUND_TRUTH",
-                                    "expected_field": "water_level_meter"
-                                },
-                                {
-                                    "sensor_type": "3D_Inclinometer_Vibration",
-                                    "action": "QUERY_GROUND_TRUTH",
-                                    "expected_field": "slope_displacement_deg"
-                                }
+                                { "sensor_type": "Radar_Water_Level_Gauge", "action": "QUERY_GROUND_TRUTH", "expected_field": "water_level_meter" },
+                                { "sensor_type": "3D_Inclinometer_Vibration", "action": "QUERY_GROUND_TRUTH", "expected_field": "slope_displacement_deg" }
                             ],
                             "edge_ai_camera_trigger": "CAPTURE_COMPRESSED_FEATURE_CODE"
                         },
@@ -433,9 +420,11 @@
             },
             4: {
                 method: "GET",
-                input: "http://localhost:8000/data/report?city_name=花蓮縣",
+                baseInput: "http://localhost:8000/data/report?city_name=花蓮縣",
+                input: "",
                 desc: "按下方『點擊調用第四模組網關』按鈕，API 服務元件將實時串接內政部消防署中央災害應變中心 (EMIC) 開放資料，輸出符合政府開放資料標準的民生公共物聯網大數據交換包。",
                 status: "✓ 等待外部中繼觸發命令...",
+                defaultText: "EMIC 數據中心即時回報：花蓮縣局部山區發布大雨特報，常態物聯網背景同步進行中。",
                 json: {
                     "success": true,
                     "message": "民生物聯網災情通報資料擷取成功",
@@ -449,19 +438,42 @@
                         "total_red_twp": "2", "total_red_vil": "3",
                         "total_rivers": "4", "total_collapse": "3",
                         "status": 1, "no_data_mark": null,
-                        "rpt_time": "2026-05-28T06:31:04.0000000+08:00"
+                        "rpt_time": "2026-05-28T06:31:04.0000000+08:00",
+                        "raw_input_text": ""
                     }],
                     "timestamp": 1748390400
                 }
             }
         };
 
+        function handleLiveTextEdit() {
+            const typedText = document.getElementById("customTextInput").value;
+            const currentMod = mockData[currentActiveModule];
+
+            // 1. 同步更新資料模型的 JSON 中的 raw_input_text 欄位
+            if (currentActiveModule === 4) {
+                currentMod.json.data[0].raw_input_text = typedText;
+            } else {
+                currentMod.json.data.raw_input_text = typedText;
+            }
+
+            // 2. 根據 HTTP Method (GET/POST) 修改請求網址/格式呈現
+            if (currentMod.method === "POST") {
+                currentMod.input = `${currentMod.baseInput}\n\n[Request Body JSON]:\n{\n    "text": "${typedText}"\n}`;
+            } else {
+                currentMod.input = `${currentMod.baseInput}&raw_input_text=${encodeURIComponent(typedText)}`;
+            }
+
+            // 3. 實時渲染到右側畫面的請求內容區與輸出 JSON 區
+            document.getElementById("inputContent").innerText = currentMod.input;
+            document.getElementById("outputContent").innerText = JSON.stringify(currentMod.json, null, 4);
+        }
+
         let currentActiveModule = 1;
 
         function triggerModule(modId) {
             currentActiveModule = modId;
 
-            // 變更 UI 卡片啟動狀態
             for (let i = 1; i <= 4; i++) {
                 const card = document.getElementById(`mod${i}`);
                 const arrow = document.getElementById(`arrow${i}`);
@@ -474,21 +486,21 @@
                 }
             }
 
-            // 更新執行按鈕文字
             document.getElementById("executeBtn").innerText = `⚡ 點擊調用第${["一", "二", "三", "四"][modId - 1]}模組網關`;
-
-            // 更新中間網關的狀態文字
             document.getElementById("processStatus").innerText = mockData[modId].status;
 
-            // 更新右側 Input 資訊
-            document.getElementById("httpMethod").innerText = mockData[modId].method;
-            document.getElementById("inputContent").innerText = mockData[modId].input;
-            document.getElementById("behaviorDesc").innerText = mockData[modId].desc;
+            const currentMod = mockData[modId];
+            let currentSavedText = (modId === 4) ? currentMod.json.data[0].raw_input_text : currentMod.json.data.raw_input_text;
+            
+            if (!currentSavedText) {
+                currentSavedText = currentMod.defaultText;
+            }
+            
+            document.getElementById("customTextInput").value = currentSavedText;
+            handleLiveTextEdit();
 
-            // 格式化寫入 JSON 內容
-            document.getElementById("outputContent").innerText = JSON.stringify(mockData[modId].json, null, 4);
-
-            // 自動切換到輸入視窗
+            document.getElementById("httpMethod").innerText = currentMod.method;
+            document.getElementById("behaviorDesc").innerText = currentMod.desc;
             toggleTab('input');
         }
 
@@ -531,7 +543,6 @@
             }
         }
 
-        // 初始化載入模組一
         window.onload = function () {
             triggerModule(1);
         };
