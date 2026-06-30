@@ -1,6 +1,6 @@
 import json
 from datetime import datetime, timedelta
-from fastapi import APIRouter, BackgroundTasks, Request, Body
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request, Body
 
 from utils.llm import parse_disaster_message, _run_analyze, _build_alert_message
 from utils.notify import send_line_reply, broadcast_line_bot_message
@@ -54,13 +54,25 @@ async def notify(request: Request, background_tasks: BackgroundTasks, payload: d
             raw_message = payload.get("text", "")
 
         rate_key = f"line:{user_id}" if user_id else request.client.host
-        check_rate_limit(rate_key)
+        try:
+            check_rate_limit(rate_key)  # 第一次 LLM 呼叫（parse_disaster_message）
+            check_rate_limit(rate_key)  # 第二次 LLM 呼叫（_analyze_and_broadcast）
+        except HTTPException as e:
+            if reply_token:
+                send_line_reply(reply_token, e.detail)
+            return {"status": "RATE_LIMITED", "message": e.detail}
 
         if len(raw_message.strip()) < 3:
             send_line_reply(reply_token, "回報訊息需大於三個字才能處理喔")
             return {"status": "IGNORED", "message": "訊息過短，略過"}
 
-        analysis_result = await parse_disaster_message(raw_message)
+        try:
+            analysis_result = await parse_disaster_message(raw_message)
+        except ValueError as e:
+            error_msg = f"您的訊息過長，系統無法處理，請縮短訊息後重新輸入。"
+            if reply_token:
+                send_line_reply(reply_token, error_msg)
+            return {"status": "ERROR", "message": str(e)}
 
         if analysis_result["severity"] == "INFO" and not analysis_result.get("needs_rescue", False):
             return success_response(message="非緊急訊息，不處理")

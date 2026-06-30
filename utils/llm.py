@@ -3,8 +3,9 @@ import json
 import httpx
 from datetime import datetime, timedelta
 
-from config.settings import LLM_BASE_URL, LLM_API_KEY, LLM_MODEL
+from config.settings import LLM_BASE_URL, LLM_API_KEY, LLM_MODEL, LLM_MAX_INPUT_TOKENS
 from config.prompts import NOTIFY_SYSTEM_PROMPT, ANALYZE_SYSTEM_PROMPT
+from utils.token_counter import count_tokens
 
 
 async def _call_llm(system_prompt: str, user_content: str, max_tokens: int = 1024) -> str:
@@ -12,6 +13,13 @@ async def _call_llm(system_prompt: str, user_content: str, max_tokens: int = 102
     統一的 LLM 呼叫介面，回傳解析後的純文字內容。
     目前串接 Groq，若要替換其他服務（OpenAI、Ollama 等）只需修改此函式。
     """
+    input_tokens = count_tokens(system_prompt) + count_tokens(user_content)
+    if input_tokens > LLM_MAX_INPUT_TOKENS:
+        raise ValueError(
+            f"輸入 token 數 ({input_tokens}) 超過上限 ({LLM_MAX_INPUT_TOKENS})，已拒絕呼叫 LLM。"
+        )
+    print(f"[token check] input={input_tokens}/{LLM_MAX_INPUT_TOKENS}")
+
     async with httpx.AsyncClient(timeout=30) as client:
         response = await client.post(
             LLM_BASE_URL,
@@ -33,7 +41,15 @@ async def _call_llm(system_prompt: str, user_content: str, max_tokens: int = 102
     if response.status_code != 200:
         raise Exception(f"LLM API 錯誤: {response.status_code}")
 
-    content = (response.json()["choices"][0]["message"]["content"] or "{}").strip()
+    data = response.json()
+    usage = data.get("usage", {})
+    print(
+        f"[token usage] prompt={usage.get('prompt_tokens')} "
+        f"completion={usage.get('completion_tokens')} "
+        f"total={usage.get('total_tokens')}"
+    )
+
+    content = (data["choices"][0]["message"]["content"] or "{}").strip()
     content = re.sub(r"<think>[\s\S]*?</think>", "", content)
     content = re.sub(r"<think>[\s\S]*$", "", content)
     content = content.strip()
@@ -61,6 +77,8 @@ async def parse_disaster_message(text: str) -> dict:
     try:
         content = await _call_llm(NOTIFY_SYSTEM_PROMPT, text, max_tokens=512)
         return json.loads(content)
+    except ValueError:
+        raise
     except Exception as e:
         print(f"[parse_disaster_message] 失敗: {e}")
         return fallback
