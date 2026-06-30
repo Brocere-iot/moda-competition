@@ -420,7 +420,7 @@
             },
             4: {
                 method: "GET",
-                baseInput: "http://localhost:8000/data/report?city_name=花蓮縣",
+                baseInput: "/data/report?city_name=花蓮縣",
                 input: "",
                 desc: "按下方『點擊調用第四模組網關』按鈕，API 服務元件將實時串接內政部消防署中央災害應變中心 (EMIC) 開放資料，輸出符合政府開放資料標準的民生公共物聯網大數據交換包。",
                 status: "✓ 等待外部中繼觸發命令...",
@@ -450,21 +450,23 @@
             const typedText = document.getElementById("customTextInput").value;
             const currentMod = mockData[currentActiveModule];
 
-            // 1. 同步更新資料模型的 JSON 中的 raw_input_text 欄位
+            // 1. BACKGROUND SYNC: Always update the raw_input_text field inside the JSON model
             if (currentActiveModule === 4) {
                 currentMod.json.data[0].raw_input_text = typedText;
             } else {
                 currentMod.json.data.raw_input_text = typedText;
             }
 
-            // 2. 根據 HTTP Method (GET/POST) 修改請求網址/格式呈現
+            // 2. VISUAL DISPLAY: Keep GET URLs realistic, only show text layout for POST
             if (currentMod.method === "POST") {
+                // Module 3 (POST): Shows a clean, realistic HTTP Request Body format
                 currentMod.input = `${currentMod.baseInput}\n\n[Request Body JSON]:\n{\n    "text": "${typedText}"\n}`;
             } else {
-                currentMod.input = `${currentMod.baseInput}&raw_input_text=${encodeURIComponent(typedText)}`;
+                // Modules 1, 2, and 4 (GET): Keep the URL 100% clean as a pure API endpoint
+                currentMod.input = currentMod.baseInput;
             }
 
-            // 3. 實時渲染到右側畫面的請求內容區與輸出 JSON 區
+            // 3. Render directly to the screen viewports
             document.getElementById("inputContent").innerText = currentMod.input;
             document.getElementById("outputContent").innerText = JSON.stringify(currentMod.json, null, 4);
         }
@@ -504,14 +506,64 @@
             toggleTab('input');
         }
 
-        function executeQuery() {
+        async function executeQuery() {
+            const executeBtn = document.getElementById("executeBtn");
+            const originalBtnText = executeBtn.innerText;
+
+            // 1. 進入傳輸鎖定狀態，防止連續重複點擊
+            executeBtn.disabled = true;
+            executeBtn.innerText = "⏳ 核心網關網聯中...";
+
+            // 設定初始讀取狀態提示
             const statusMessages = {
                 1: "✓ 成功調用火災監測資料庫!\n✓ 數據同步封包封裝完畢.",
                 2: "✓ 成功調用地震/傾斜資料庫!\n✓ FFT 圖資封包封裝完畢.",
-                3: "✓ 語意分析完成!\n✓ 結構化通報 JSON 輸出完畢.",
+                3: "✓ 偵測到 POST 請求路由...\n✓ 正在投遞多模態文本至 /notify 網關...",
                 4: "✓ 成功調用民生物聯網資料庫!\n✓ 數據同步封包封裝完畢."
             };
             document.getElementById("processStatus").innerText = statusMessages[currentActiveModule];
+            if (currentActiveModule === 3) {
+                const typedText = document.getElementById("customTextInput").value;
+
+                try {
+                    // 發送真實 POST 請求，Body 格式為 {"text": "..."}
+                    console.log('DEBUG', typedText)
+                    const response = await fetch('/notify', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ text: typedText })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP 錯誤！狀態碼: ${response.status}`);
+                    }
+
+                    // 讀取後端實時 AI 分析完回傳的 JSON 交換規格
+                    const serverResult = await response.json();
+                    console.log("🔴 成功取得 /notify 後端即時解譯封包:", serverResult);
+
+                    // 關鍵點：用後端真值直接蓋掉前端的靜態 mock 數據物件
+                    mockData[3].json = serverResult;
+                    
+                    document.getElementById("processStatus").innerText = "✓ 實時語意分析完成!\n✓ 衛星應變交換規格 (JSON) 已由後端成功產生.";
+
+                } catch (error) {
+                    console.warn("⚠ 無法連線至真實 /notify 後端，啟動應變展示預載 Mock 數據機制:", error);
+                    document.getElementById("processStatus").innerText = "⚠ 後端連線異常，已切換至韌性預載防護數據:\n✓ 語意分析完成!\n✓ 結構化通報 JSON 輸出完畢.";
+                    
+                    // 降級處理：即使失敗，依然確保畫面的 raw_input_text 欄位與輸入框打的字一致
+                    mockData[3].json.data.raw_input_text = typedText;
+                }
+            }
+
+            // 3. 渲染最終結果到「2. 交換規格 (Output JSON)」文本區
+            document.getElementById("outputContent").innerText = JSON.stringify(mockData[currentActiveModule].json, null, 4);
+
+            // 4. 解除按鈕鎖定並自動切換分頁
+            executeBtn.disabled = false;
+            executeBtn.innerText = originalBtnText;
             toggleTab('output');
         }
 
