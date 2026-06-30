@@ -316,7 +316,7 @@
         const mockData = {
             1: {
                 method: "GET",
-                baseInput: "https://5urqyc2ccc.execute-api.ap-northeast-1.amazonaws.com/api/fire-data?iot-name=04702154615&end-date=1759827597&start-date=1759826397",
+                baseInput: "/data/fire/3",
                 input: "",
                 desc: "當博誠邊緣端火災監測魔塊 (IOT5_Fire) 聯網時，系統主動採集包含紅外熱顯像、二氧化碳、周圍溫度等微觀真值指標，並透過此結構化 API 向中央網關回傳數據。",
                 status: "✓ 解析火災感測器數據...\n✓ 壓縮傳輸特徵碼...",
@@ -341,7 +341,7 @@
             },
             2: {
                 method: "GET",
-                baseInput: "http://localhost:8000/data/earthquake/1?station_id=23",
+                baseInput: "/data/earthquake/23",
                 input: "",
                 desc: "部署在偏遠邊坡土石流高風險區的魔塊 (IOT5_landslide)，偵測到結構體或坡地異常傾斜移位與高頻振動。API 將回傳經邊緣端快速傅立葉轉換 (FFT) 後的三軸圖資與 P/S 波能量指標。",
                 status: "✓ 地震/傾斜閥值判定成功\n✓ 執行高頻 FFT 圖資轉換...",
@@ -370,7 +370,7 @@
             },
             3: {
                 method: "POST",
-                baseInput: "http://localhost:8000/notify",
+                baseInput: "/notify",
                 input: "",
                 desc: "極端災變導致馬太鞍溪現地地面行動基地台癱瘓時，第一線人員發送白話文字通報。博誠 API 元件內嵌關鍵字語意解析，能快速識別防汛、土石流等公共安全關鍵字，轉譯為結構化標準 JSON 格式以利系統整合。",
                 status: "✓ 開啟語意分析中樞\n✓ 自主分析多步驟決策中...",
