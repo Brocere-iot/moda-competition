@@ -144,7 +144,8 @@ async def notify(request: Request, background_tasks: BackgroundTasks, payload: d
             }
         }
 
-        background_tasks.add_task(_analyze_and_broadcast, raw_message)
+        if events:
+            background_tasks.add_task(_analyze_and_broadcast, raw_message)
 
         return success_response(message="災情通報接收並處理成功", data=standard_json_output)
 
