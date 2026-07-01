@@ -509,59 +509,91 @@
         async function executeQuery() {
             const executeBtn = document.getElementById("executeBtn");
             const originalBtnText = executeBtn.innerText;
+            
+            // Extract the live input up front so it is safely accessible across all modules
+            const typedText = document.getElementById("customTextInput").value;
 
-            // 1. 進入傳輸鎖定狀態，防止連續重複點擊
+            // 1. Activate UI loading safety state to block dual clicks
             executeBtn.disabled = true;
             executeBtn.innerText = "⏳ 核心網關網聯中...";
 
-            // 設定初始讀取狀態提示
+            // Configure status tracking messages for the dashboard engine
             const statusMessages = {
-                1: "✓ 成功調用火災監測資料庫!\n✓ 數據同步封包封裝完畢.",
-                2: "✓ 成功調用地震/傾斜資料庫!\n✓ FFT 圖資封包封裝完畢.",
+                1: "✓ 偵測到 GET 請求路由...\n✓ 正在調用火災監測網關 API...",
+                2: "✓ 偵測到 GET 請求路由...\n✓ 正在調用邊坡傾斜物聯網 API...",
                 3: "✓ 偵測到 POST 請求路由...\n✓ 正在投遞多模態文本至 /notify 網關...",
-                4: "✓ 成功調用民生物聯網資料庫!\n✓ 數據同步封包封裝完畢."
+                4: "✓ 偵測到 GET 請求路由...\n✓ 正在抓取民生公共物聯網開放資料..."
             };
             document.getElementById("processStatus").innerText = statusMessages[currentActiveModule];
-            if (currentActiveModule === 3) {
-                const typedText = document.getElementById("customTextInput").value;
 
+            // 2. RUN NETWORK TRANSPORT ROUTING PIPELINE
+            if (currentActiveModule === 3) {
+                // --- MODULE 3: REAL TIME SEMANTIC NLP ANALYZER (POST) ---
                 try {
-                    // 發送真實 POST 請求，Body 格式為 {"text": "..."}
-                    console.log('DEBUG', typedText)
                     const response = await fetch('/notify', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ text: typedText })
                     });
 
-                    if (!response.ok) {
-                        throw new Error(`HTTP 錯誤！狀態碼: ${response.status}`);
-                    }
+                    if (!response.ok) throw new Error(`HTTP 錯誤！狀態碼: ${response.status}`);
 
-                    // 讀取後端實時 AI 分析完回傳的 JSON 交換規格
                     const serverResult = await response.json();
                     console.log("🔴 成功取得 /notify 後端即時解譯封包:", serverResult);
-
-                    // 關鍵點：用後端真值直接蓋掉前端的靜態 mock 數據物件
                     mockData[3].json = serverResult;
                     
                     document.getElementById("processStatus").innerText = "✓ 實時語意分析完成!\n✓ 衛星應變交換規格 (JSON) 已由後端成功產生.";
-
                 } catch (error) {
-                    console.warn("⚠ 無法連線至真實 /notify 後端，啟動應變展示預載 Mock 數據機制:", error);
-                    document.getElementById("processStatus").innerText = "⚠ 後端連線異常，已切換至韌性預載防護數據:\n✓ 語意分析完成!\n✓ 結構化通報 JSON 輸出完畢.";
-                    
-                    // 降級處理：即使失敗，依然確保畫面的 raw_input_text 欄位與輸入框打的字一致
+                    console.warn("⚠ 無法連線至真實 /notify 後端，啟用展示預載 Mock 機制:", error);
+                    document.getElementById("processStatus").innerText = "⚠ 後端連線異常，已切換至韌性預載防護數據:\n✓ 語意分析完成!\n✓ 結構化通報 JSON 封包處理完畢.";
                     mockData[3].json.data.raw_input_text = typedText;
+                }
+            } else {
+                // --- MODULES 1, 2, & 4: DISTRIBUTED TELEMETRY GATEWAYS (GET) ---
+                try {
+                    // Dynamically target the exact REST URL route path
+                    const targetUrl = mockData[currentActiveModule].baseInput;
+
+                    const response = await fetch(targetUrl, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    if (!response.ok) throw new Error(`HTTP 錯誤！狀態碼: ${response.status}`);
+
+                    const serverResult = await response.json();
+                    console.log(`🔴 成功取得模組 ${currentActiveModule} 後端真實數據:`, serverResult);
+
+                    // Commit the server payload straight to the active dashboard schema
+                    mockData[currentActiveModule].json = serverResult;
+                    
+                    // Re-inject the current screen text so it remains visible inside the output pane
+                    if (currentActiveModule === 4) {
+                        if (!mockData[4].json.data) mockData[4].json.data = [{}];
+                        mockData[4].json.data[0].raw_input_text = typedText;
+                    } else {
+                        if (!mockData[currentActiveModule].json.data) mockData[currentActiveModule].json.data = {};
+                        mockData[currentActiveModule].json.data.raw_input_text = typedText;
+                    }
+
+                    document.getElementById("processStatus").innerText = `✓ 數據資料串接成功!\n✓ 後端實時交換規格數據加載完畢.`;
+                } catch (error) {
+                    console.warn(`⚠ 無法同步真實模組 ${currentActiveModule} API，改用韌性本地展示資料:`, error);
+                    document.getElementById("processStatus").innerText = `⚠ 網路連線異常，已啟動現地快取應變機制:\n✓ 預載感測指標常態封裝封畢.`;
+                    
+                    // Re-inject typed text on backup storage object path
+                    if (currentActiveModule === 4) {
+                        mockData[4].json.data[0].raw_input_text = typedText;
+                    } else {
+                        mockData[currentActiveModule].json.data.raw_input_text = typedText;
+                    }
                 }
             }
 
-            // 3. 渲染最終結果到「2. 交換規格 (Output JSON)」文本區
+            // 3. Render final output structure into pane "2. 交換規格 (Output JSON)"
             document.getElementById("outputContent").innerText = JSON.stringify(mockData[currentActiveModule].json, null, 4);
 
-            // 4. 解除按鈕鎖定並自動切換分頁
+            // 4. Release execution safety locks and transition display frames
             executeBtn.disabled = false;
             executeBtn.innerText = originalBtnText;
             toggleTab('output');
