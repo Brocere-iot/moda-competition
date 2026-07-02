@@ -11,8 +11,8 @@
 本作品由「博誠魔塊：韌性積木災防隊」開發，完全符合大會規範。免安裝任何後端伺服器環境，全功能以開源純前端模擬應用程式介面與資料流程呈現。評審與開源社群只需雙擊網頁檔案或點擊下方展示連結，即可一鍵驗證四大模組通報（實作一）與人工智慧代理人多步驟推理分析（實作二）的完整輸入、處理、輸出規格。
 
 ### 🌐 核心功能線上互動式原型驗證（網頁展示）
-* **實作一：多模態應用程式介面服務元件通報中樞** ➔ [點此開啟線上驗證](https://brocere-iot.github.io/moda-competition/call.html)
-* **實作二：人工智慧代理人元件分析大腦** ➔ [點此開啟線上驗證](https://brocere-iot.github.io/moda-competition/analysis.html)
+* **實作一：多模態應用程式介面服務元件通報中樞** ➔ [點此開啟線上驗證](http://3.115.143.195:8000/)
+* **實作二：人工智慧代理人元件分析大腦** ➔ [點此開啟線上驗證](http://3.115.143.195:8000/analysis)
 
 ---
 
@@ -152,6 +152,11 @@
 
 A lightweight FastAPI application featuring Swagger UI documentation, environment variable configuration, and a mock database for sensor data.
 
+> **Cloud Deployment**
+
+> * The application is fully deployed on the cloud and live via the designated API endpoint and port at **`3.115.143.195:8000`**.  This active cloud instance is pre-configured with authenticated production keys and credentials required for full third-party service pipelines (e.g., Groq LLM orchestration and live LINE broadcast loops).
+> * **Local Testing Note:** Replicating 100% of this multi-modal automation functionality on a local runtime machine will require setting up identical environment variables and API tokens. Please refer to the **Local Development** below for comprehensive instructions.
+
 ---
 
 ### Prerequisites
@@ -161,6 +166,11 @@ Before starting, make sure you have a `.env` file created in the root directory:
 ```env
 PORT=8000
 LINE_CHANNEL_ACCESS_TOKEN=Your_LINE_Channel_Access_Token
+LLM_API_KEY=
+LLM_BASE_URL=https://api.groq.com/openai/v1/chat/completions
+LLM_MODEL=qwen/qwen3-32b
+LINE_CHANNEL_SECRET=
+USER_LINE_ID=
 ```
 
 ### Option 1: Local Development (Without Container)
