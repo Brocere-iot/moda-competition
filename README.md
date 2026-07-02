@@ -165,12 +165,10 @@ Before starting, make sure you have a `.env` file created in the root directory:
 
 ```env
 PORT=8000
-LINE_CHANNEL_ACCESS_TOKEN=Your_LINE_Channel_Access_Token
+LINE_CHANNEL_ACCESS_TOKEN=
 LLM_API_KEY=
 LLM_BASE_URL=https://api.groq.com/openai/v1/chat/completions
 LLM_MODEL=qwen/qwen3-32b
-LINE_CHANNEL_SECRET=
-USER_LINE_ID=
 ```
 
 ### Option 1: Local Development (Without Container)
