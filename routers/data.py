@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException, Query, status
 from typing import List
 import httpx
+import json
+import os
 
 from database.mock_db import mock_fire_data, mock_earthquake_data
 from utils.response_helper import success_response, error_response
@@ -39,14 +41,19 @@ async def get_earthquake_data(station_id: int):
 @router.get("/report", responses={200: EXAMPLE_REPORT})
 async def get_report_data(city_name: List[str] = Query(default=None)):
     url = "https://portal2.emic.gov.tw/Pub/ERA2/OpenData/ERA2_C4.json"
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url)
-    if response.status_code != 200:
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=error_response(f"Failed to fetch report data: upstream returned {response.status_code}", code=502)
-        )
-    data = response.json()
+    data = None
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url)
+        if response.status_code == 200:
+            data = response.json()
+    except Exception:
+        pass
+
+    if data is None:
+        fallback_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data.json")
+        with open(fallback_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
     detail = data.get("detail", [])
     if city_name:
         detail = [city for city in detail if city.get("city_name") in city_name]
