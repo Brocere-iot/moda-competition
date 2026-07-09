@@ -1,8 +1,11 @@
-from fastapi import APIRouter, HTTPException, Query, status
+import json
+import logging
+import os
 from typing import List
 import httpx
-import json
-import os
+from fastapi import APIRouter, HTTPException, Query, status
+
+logger = logging.getLogger(__name__)
 
 from database.mock_db import mock_fire_data, mock_earthquake_data
 from utils.response_helper import success_response, error_response
@@ -48,7 +51,7 @@ async def get_report_data(city_name: List[str] = Query(default=None)):
         if response.status_code == 200:
             data = response.json()
     except Exception:
-        pass
+        logger.warning("Failed to fetch external report data, falling back to local file", exc_info=True)
 
     if data is None:
         fallback_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data.json")

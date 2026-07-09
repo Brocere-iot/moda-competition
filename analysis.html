@@ -454,8 +454,8 @@
                     analysisOutputJson = result;
                 }
             })
-            .catch(error => {
-                console.warn("FastAPI offline or error. Using booth display fallback mock data:", error);
+            .catch(() => {
+                console.warn("FastAPI offline or error. Using booth display fallback mock data.");
                 // Fallback placeholder is preserved so your competition booth display never breaks!
             });
 

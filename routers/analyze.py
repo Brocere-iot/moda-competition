@@ -1,6 +1,9 @@
 import json
+import logging
 from datetime import datetime, timedelta
 from fastapi import APIRouter, HTTPException, Request
+
+logger = logging.getLogger(__name__)
 
 from utils.llm import _run_analyze, _build_alert_message
 from utils.notify import broadcast_line_bot_message
@@ -35,7 +38,8 @@ async def analyze(payload: AnalyzeRequest, request: Request):
     try:
         analysis = await _run_analyze(input_summary)
     except Exception as e:
-        raise HTTPException(status_code=502, detail=f"LLM 呼叫或解析失敗: {e}")
+        logger.error("analyze LLM call failed: %s", e, exc_info=True)
+        raise HTTPException(status_code=502, detail="LLM 服務暫時無法使用，請稍後再試")
 
     has_disaster = analysis.get("has_disaster", False)
     disaster_type = analysis.get("disaster_type", "無")

@@ -1,7 +1,10 @@
 import re
 import json
+import logging
 import httpx
 from datetime import datetime, timedelta
+
+logger = logging.getLogger(__name__)
 
 from config.settings import LLM_BASE_URL, LLM_API_KEY, LLM_MODEL, LLM_MAX_INPUT_TOKENS
 from config.prompts import NOTIFY_SYSTEM_PROMPT, ANALYZE_SYSTEM_PROMPT
@@ -74,6 +77,7 @@ async def parse_disaster_message(text: str) -> dict:
     except ValueError:
         raise
     except Exception as e:
+        logger.warning("parse_disaster_message failed, using fallback: %s", e, exc_info=True)
         return fallback
 
 

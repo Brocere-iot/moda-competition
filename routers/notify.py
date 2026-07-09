@@ -1,6 +1,9 @@
 import json
+import logging
 from datetime import datetime, timedelta
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Request, Body
+
+logger = logging.getLogger(__name__)
 
 from utils.llm import parse_disaster_message, _run_analyze, _build_alert_message
 from utils.notify import send_line_reply, broadcast_line_bot_message
@@ -28,6 +31,7 @@ async def _analyze_and_broadcast(raw_message: str):
         if analysis.get("has_disaster"):
             broadcast_line_bot_message(_build_alert_message(analysis))
     except Exception as e:
+        logger.warning("_analyze_and_broadcast failed: %s", e, exc_info=True)
         return
 
 @router.post("/notify", responses={200: EXAMPLE_NOTIFY_FIRE})
@@ -45,7 +49,6 @@ async def notify(request: Request, background_tasks: BackgroundTasks, payload: d
             raw_message = events[0]["message"].get("text", "")
             reply_token = events[0].get("replyToken")
             user_id = events[0]["source"].get("userId")
-            print(f"--- LINE User ID: {user_id} ---")
         else:
             raw_message = payload.get("text", "")
 
@@ -146,4 +149,5 @@ async def notify(request: Request, background_tasks: BackgroundTasks, payload: d
         return success_response(message="災情通報接收並處理成功", data=standard_json_output)
 
     except Exception as e:
-        return {"status": "ERROR", "message": f"系統內部執行錯誤: {str(e)}"}
+        logger.error("notify endpoint error: %s", e, exc_info=True)
+        return {"status": "ERROR", "message": "系統內部執行錯誤，請稍後再試"}

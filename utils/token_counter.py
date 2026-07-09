@@ -1,5 +1,8 @@
+import logging
 import os
 import sys
+
+logger = logging.getLogger(__name__)
 
 os.environ.setdefault("TRANSFORMERS_VERBOSITY", "error")
 os.environ.setdefault("HF_HUB_DISABLE_IMPLICIT_TOKEN", "1")
@@ -9,6 +12,7 @@ try:
     from transformers import AutoTokenizer
     _TOKENIZER = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-7B-Instruct")
 except Exception as e:
+    logger.warning("Tokenizer load failed, will use fallback: %s", e)
     _TOKENIZER = None
 
 
@@ -23,7 +27,7 @@ def count_tokens(text: str) -> int:
         try:
             return len(_TOKENIZER.encode(text))
         except Exception:
-            pass
+            logger.debug("Tokenizer encode failed, falling back to tiktoken", exc_info=True)
 
     try:
         import tiktoken
@@ -35,4 +39,5 @@ def count_tokens(text: str) -> int:
         non_cjk_tokens = len(encoding.encode(non_cjk)) if non_cjk else 0
         return cjk_tokens + non_cjk_tokens
     except Exception:
+        logger.debug("tiktoken count failed, using character estimate", exc_info=True)
         return int(len(text) * 0.8)

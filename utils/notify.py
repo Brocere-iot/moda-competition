@@ -1,6 +1,9 @@
 import os
+import logging
 import requests
 from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
 
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 # Replace original 'push' with 'broadcast' to send messages to all users
@@ -28,10 +31,12 @@ def broadcast_line_bot_message(message: str):
             r = session.post(LINE_MESSAGING_API_URL, headers=headers, json=payload)
             r.raise_for_status()  
         except requests.exceptions.RequestException as e:
+            logger.error("LINE broadcast request failed: %s", e, exc_info=True)
             return
         # Add key to the redis cache
 
     except Exception as e:
+        logger.error("LINE broadcast unexpected error: %s", e, exc_info=True)
         return
 
     finally:
