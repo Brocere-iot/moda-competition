@@ -428,8 +428,10 @@
             let apiFetchPromise = fetch('/analyze', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
-                },
+                    'Content-Type': 'application/json',
+                     'X-CSRF-Token': window.crypto.randomUUID ? window.crypto.randomUUID() : 'secure_provenance_token',
+                     'X-Requested-With': 'XMLHttpRequest'
+                    },
                 body: JSON.stringify(requestBody)
             })
             .then(async response => {
