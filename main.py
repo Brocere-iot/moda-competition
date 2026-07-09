@@ -27,5 +27,4 @@ app.include_router(data.router)
 app.include_router(analyze.router)
 
 if __name__ == "__main__":
-    print(f"Starting server on port {PORT}...")
     uvicorn.run("main:app", host="0.0.0.0", port=PORT, reload=True)

@@ -6,12 +6,14 @@ import pytz
 
 TAIWAN_TZ = pytz.timezone("Asia/Taipei")
 
+secure_rand = random.SystemRandom()
+
 def populate_meta_data(incline_data_dict):
     current_timestamp = int(time.time())
     tw_time = datetime.now(TAIWAN_TZ).strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]  # Simulate a timestamp from one hour ago
     tw_time = tw_time[:-4]  # Remove milliseconds for cleaner output
-    random_rsrq_value = random.randint(-90, -70)  # Simulated RSRQ value
-    random_vbat_value = random.randint(3000, 4200)  # Simulated battery voltage in mV
+    random_rsrq_value = secure_rand.randint(-90, -70)  # Simulated RSRQ value
+    random_vbat_value = secure_rand.randint(3000, 4200)  # Simulated battery voltage in mV
 
     updated_incline_data_dict = {
         "timestamp": current_timestamp,

@@ -2,11 +2,14 @@ import random
 import time 
 from utils.response_helper import populate_meta_data, get_fft_figure_url
 
+# Instantiate the cryptographically secure OS-driven random engine
+secure_rand = random.SystemRandom()
+
 
 def mock_incline_data(station_id):
     current_timestamp = int(time.time())
-    mock_water_level_meter = random.uniform(0, 10)
-    mock_soil_inclination_degree = random.uniform(0, 30)
+    mock_water_level_meter = secure_rand.uniform(0, 10)
+    mock_soil_inclination_degree = secure_rand.uniform(0, 30)
 
     incline_data_dict = {
         "timestamp": current_timestamp,
@@ -28,9 +31,9 @@ def mock_incline_data(station_id):
 """
 def mock_fire_data():
     current_timestamp = int(time.time())
-    mock_temp = round(random.uniform(20.0, 100.0), 1)  # Simulate a temperature between 20.0 and 40.0 degrees Celsius
-    mock_humi = round(random.uniform(30.0, 90.0), 1)  # Simulate a humidity between 30.0 and 90.0 percent
-    mock_co2 = random.randint(-5000, -2000)  # Simulate a CO2 level between -5000 and -2000 ppm
+    mock_temp = round(secure_rand.uniform(20.0, 100.0), 1)  # Simulate a temperature between 20.0 and 40.0 degrees Celsius
+    mock_humi = round(secure_rand.uniform(30.0, 90.0), 1)  # Simulate a humidity between 30.0 and 90.0 percent
+    mock_co2 = secure_rand.randint(-5000, -2000)  # Simulate a CO2 level between -5000 and -2000 ppm
 
     fire_data_dict = {
         "timestamp": current_timestamp,
@@ -63,11 +66,11 @@ def mock_fire_data():
 
 def mock_earthquake_data():
     current_timestamp = int(time.time())
-    x_rms = random.randint(0, 10)
-    y_rms = random.randint(0, 300)
-    z_rms = random.randint(0, 10)
-    P_wave = random.choice([0, 1])
-    S_wave = random.choice([0, 1])
+    x_rms = secure_rand.randint(0, 10)
+    y_rms = secure_rand.randint(0, 300)
+    z_rms = secure_rand.randint(0, 10)
+    P_wave = secure_rand.choice([0, 1])
+    S_wave = secure_rand.choice([0, 1])
 
     earthquake_data_dict = {
         "timestamp": current_timestamp,

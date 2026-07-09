@@ -17,7 +17,6 @@ LINE_EXAMPLE_TEXT_MESSAGE = {"text": "我是馬太鞍溪上游巡檢員，剛剛
 async def _analyze_and_broadcast(raw_message: str):
     """背景任務：只用人為通報文字分析，若有災害則推播給指定使用者"""
     if not LLM_API_KEY:
-        print("[背景分析] LLM_API_KEY 未設定，略過")
         return
     try:
         input_summary = {
@@ -26,13 +25,10 @@ async def _analyze_and_broadcast(raw_message: str):
             # "external_data": [],  # 暫時關閉，待整合外部開放資料
         }
         analysis = await _run_analyze(input_summary)
-        print(f"[背景分析] has_disaster={analysis.get('has_disaster')}")
         if analysis.get("has_disaster"):
             broadcast_line_bot_message(_build_alert_message(analysis))
-            print(f"[背景分析] 已推播 LINE 警報：{analysis.get('disaster_type')}")
     except Exception as e:
-        print(f"[背景分析] 執行錯誤: {e}")
-
+        return
 
 @router.post("/notify", responses={200: EXAMPLE_NOTIFY_FIRE})
 async def notify(request: Request, background_tasks: BackgroundTasks, payload: dict = Body(example=LINE_EXAMPLE_TEXT_MESSAGE)):

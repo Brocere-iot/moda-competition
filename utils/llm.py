@@ -18,7 +18,6 @@ async def _call_llm(system_prompt: str, user_content: str, max_tokens: int = 102
         raise ValueError(
             f"輸入 token 數 ({input_tokens}) 超過上限 ({LLM_MAX_INPUT_TOKENS})，已拒絕呼叫 LLM。"
         )
-    print(f"[token check] input={input_tokens}/{LLM_MAX_INPUT_TOKENS}")
 
     async with httpx.AsyncClient(timeout=30) as client:
         response = await client.post(
@@ -43,11 +42,6 @@ async def _call_llm(system_prompt: str, user_content: str, max_tokens: int = 102
 
     data = response.json()
     usage = data.get("usage", {})
-    print(
-        f"[token usage] prompt={usage.get('prompt_tokens')} "
-        f"completion={usage.get('completion_tokens')} "
-        f"total={usage.get('total_tokens')}"
-    )
 
     content = (data["choices"][0]["message"]["content"] or "{}").strip()
     content = re.sub(r"<think>[\s\S]*?</think>", "", content)
@@ -80,7 +74,6 @@ async def parse_disaster_message(text: str) -> dict:
     except ValueError:
         raise
     except Exception as e:
-        print(f"[parse_disaster_message] 失敗: {e}")
         return fallback
 
 

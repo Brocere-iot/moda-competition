@@ -28,10 +28,11 @@ def broadcast_line_bot_message(message: str):
             r = session.post(LINE_MESSAGING_API_URL, headers=headers, json=payload)
             r.raise_for_status()  
         except requests.exceptions.RequestException as e:
-            print(f"LINE messaging API failed: {str(e)}")
+            return
+        # Add key to the redis cache
 
     except Exception as e:
-        print(f"LINE notify failed: {str(e)}")
+        return
 
     finally:
         session.close()
@@ -53,7 +54,7 @@ def send_line_reply(reply_token: str, reply_text: str):
     }
     # 發送 POST 請求給 LINE 
     response = requests.post(LINE_API_URL, headers=headers, json=payload)
-    print(f"--- LINE status code: {response.status_code} ---")
+    return
 
 
 def send_line_push(user_id: str, message: str):
@@ -67,7 +68,7 @@ def send_line_push(user_id: str, message: str):
         "messages": [{"type": "text", "text": message}]
     }
     response = requests.post(LINE_PUSH_URL, headers=headers, json=payload)
-    print(f"--- LINE push status: {response.status_code} ---")
+    return
 
 
 # if __name__ == "__main__":

@@ -13,7 +13,6 @@ async def verify_line_signature(request: Request):
     使用 HMAC-SHA256 對 raw request body 簽章後比對。
     """
     if not LINE_CHANNEL_SECRET:
-        print("[LINE Auth] 警告：LINE_CHANNEL_SECRET 未設定，略過簽章驗證")
         return
 
     signature = request.headers.get("X-Line-Signature")

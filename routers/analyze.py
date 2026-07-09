@@ -31,14 +31,9 @@ async def analyze(payload: AnalyzeRequest, request: Request):
         "external_data": payload.external_data,
     }
 
-    print(f"\n{'='*60}")
-    print(f"[/analyze] IP={client_ip}  time={datetime.utcnow().isoformat()}Z")
-    print(f"[/analyze] 輸入：{json.dumps(input_summary, ensure_ascii=False)[:300]}...")
 
     try:
         analysis = await _run_analyze(input_summary)
-        print(f"[/analyze] LLM 回應: {analysis}")
-        print(f"{'='*60}\n")
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"LLM 呼叫或解析失敗: {e}")
 
