@@ -311,6 +311,7 @@
     <script>
         const mockData = {
             1: {
+                hasBody: false,
                 method: "GET",
                 baseInput: "/data/fire/3",
                 input: "",
@@ -336,6 +337,7 @@
                 }
             },
             2: {
+                hasBody: false,
                 method: "GET",
                 baseInput: "/data/earthquake/23",
                 input: "",
@@ -365,7 +367,7 @@
                 }
             },
             3: {
-                method: "POST",
+                hasBody: true,
                 baseInput: "/notify",
                 input: "",
                 desc: "極端災變導致馬太鞍溪現地地面行動基地台癱瘓時，第一線人員發送白話文字通報。博誠 API 元件內嵌關鍵字語意解析，能快速識別防汛、土石流等公共安全關鍵字，轉譯為結構化標準 JSON 格式以利系統整合。",
@@ -415,6 +417,7 @@
                 }
             },
             4: {
+                hasBody: false,
                 method: "GET",
                 baseInput: "/data/report?city_name=花蓮縣",
                 input: "",
@@ -454,7 +457,7 @@
             }
 
             // 2. VISUAL DISPLAY: Keep GET URLs realistic, only show text layout for POST
-            if (currentMod.method === "POST") {
+            if (currentMod.hasBody == true) {
                 currentMod.input = `${currentMod.baseInput}\n\n[Request Body JSON]:\n{\n    "text": "${typedText}"\n}`;
             } else {
                 currentMod.input = currentMod.baseInput;
