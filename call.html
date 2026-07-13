@@ -505,7 +505,7 @@
             document.getElementById("customTextInput").value = currentSavedText;
             handleLiveTextEdit();
 
-            document.getElementById("httpMethod").innerText = currentMod.method;
+            document.getElementById("httpMethod").innerText = currentMod.hasBody ? "POST" : "GET";
             document.getElementById("behaviorDesc").innerText = currentMod.desc;
             toggleTab('input');
         }
